@@ -1,7 +1,19 @@
 let cateIdx = 0;
 let mainIdx = 0;
 
-/****** Main Setting ******/
+
+
+/****** Ui settings ******/
+/****** Click Events ******/
+$("#ui-page button").on("click", function (){
+  $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
+  cateIdx = $(this).parent(".ui-page__item").index();
+  $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
+});
+
+
+
+/****** Main Settings ******/
 const main_sw = new Swiper('#sw-main', {
   loop: true,
   pagination: {
@@ -19,15 +31,21 @@ const main_sw = new Swiper('#sw-main', {
 // 슬라이드 변경 
 main_sw.on('slideChange', function () {
   mainIdx = main_sw.realIndex;
+  $("#ui-header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
 });
-
-
 
 /****** Click Events ******/
 // 메인 - view-more 
 $('.view-more').on("click",function (){
   toggleMain();
   toggleWorks(mainIdx);
+});
+
+// 메인 - nav
+$("#ui-header_nav li").on("click", function (){
+  mainIdx = $(this).index();
+  console.log(mainIdx)
+  main_sw.slideTo(mainIdx, 500)
 });
 
 // 섹션 - close 
@@ -50,10 +68,5 @@ function toggleWorks(mainIdx){
 
 
 
-/****** About Setting ******/
+/****** About Settings ******/
 /****** Click Events ******/
-$(".__ui-page").on("click", function (){
-  $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
-  cateIdx = $(this).parent(".ui-page__item").index();
-  $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
-});

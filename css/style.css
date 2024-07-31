@@ -38,6 +38,18 @@
   justify-content: space-between;
   z-index: 1;
 }
+.ui-header__nav-item.active button {
+  opacity: 1;
+}
+.ui-header__nav-item button {
+  opacity: 0.6;
+  border: none;
+  background-color: transparent;
+  transition: opacity 0.3s;
+}
+.ui-header__nav-item button:hover {
+  opacity: 1;
+}
 .ui-header__right {
   display: flex;
   gap: 0 200px;

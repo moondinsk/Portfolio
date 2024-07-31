@@ -53,6 +53,25 @@
     display:flex;
     justify-content: space-between;
     z-index: 1;
+    &__nav{
+      &-item{
+        &.active{
+          button{
+            opacity:1;
+          }
+        }
+        button{
+          opacity:.6;
+          border:none;
+          background-color: transparent;
+          transition: opacity .3s;
+          
+          &:hover{
+            opacity:1;
+          }
+        }
+      }
+    }
     &__right{
       display: flex;
       gap:0 200px;
