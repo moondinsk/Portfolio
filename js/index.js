@@ -23,6 +23,9 @@ const main_sw = new Swiper('#sw-main', {
     nextEl: '.swiper-button-next',
     prevEl: '.swiper-button-prev',
   },
+  mousewheel: {
+    enabled: true, 
+  },
   scrollbar: {
     el: '.swiper-scrollbar',
   },
