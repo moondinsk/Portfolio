@@ -1,4 +1,21 @@
 /* Common */
+
+@mixin page-area{
+  position:absolute;
+  top:0;
+  right:0;
+  width:90%;
+  max-width:calc(100% - 120px);
+  height:100%;
+  z-index: 1;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .5s, visibility .5s;
+  &.show{
+    opacity:1;
+    visibility: visible;
+  }
+}
 .view-more {
   padding: 10px 14px;
   border: 1px solid #222;
@@ -21,37 +38,72 @@
   margin:0 auto;
   height:100vh;
   background-color: pink;
-
-  &__ui{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height:100%;
-    padding:20px;
-    background-color:beige;
-  }
 }
 
-/* Header */
-.header{
-  display:flex;
-  justify-content: space-between;
-  z-index: 1;
-
-  &__nav{
-    margin-left:40%;
-  }
-}
-.category{
-  z-index: 1;
-}
-/* Footer */
-.footer{
+.ui{
   display: flex;
-  justify-content: flex-end;
-  z-index: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  height:100%;
+  padding:20px;
+  background-color:beige;
+
+  /* Header */
+  &-header{
+    display:flex;
+    justify-content: space-between;
+    z-index: 1;
+    &__right{
+      display: flex;
+      gap:0 200px;
+      opacity:0;
+      visibility: hidden;
+      transition:opacity .5s, visibility .5s;
+      &.active{
+        opacity:1;visibility:visible;
+      }
+    }
+  }
+  &-page{
+    align-self:flex-start;
+    z-index: 1;
+
+    &__item{
+      i{
+        opacity:0;
+        transition:opacity .2s, padding .2s;
+      }
+      &:hover,
+      &.active{
+        i{
+          opacity:1;
+          padding-right:5px;
+        }
+      }
+    }
+    &__link{
+      border:none;
+      background-color:transparent;
+    }
+  }
+  
+  /* Footer */
+  &-footer{
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1;
+  }
 }
 
+.page{
+  &__wrap{
+    opacity:0;visibility:hidden;
+    transition:opacity .5s, visibility .5s;
+    &.show{
+      opacity:1;visibility:visible;
+    }
+  }
+}
 
 /* Main */
 .main{
@@ -63,6 +115,7 @@
   background-color: aquamarine;
   opacity:0;
   visibility: hidden;
+  transition:opacity .5s, visibility .5s;
   &.show{
     opacity:1;
     visibility: visible;
@@ -105,28 +158,34 @@
 
 /* Works */
 .works{
-  position:fixed;
-  top:0;
-  width:100%;
-  max-width:1400px;
-  height:100%;
-  padding-left:20%;
-  padding-right:40px;
+  @include page-area;
   background-color: rgb(204, 216, 177);
-  opacity:0;
-  visibility:hidden;
-  &.show{
-    opacity:1;
-    visibility: visible;
-  }
-
   &__wrap{
-    padding-top:100px;
-
+    position: absolute;
+    top:0;
+    right:0;
+    width:100%;
+    padding-top:70px;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .5s, visibility .5s;
+    &.show{
+      opacity:1;
+      visibility: visible;
+    }
+  }
+  &__close{
+    position: absolute;
+    top:22px;
+    right:10px;
+    font-size:25px;
+    border:none;
+    background-color:transparent;
+    z-index: 2;
   }
   &__area{
     overflow-y:auto;
-    height:calc(100vh - 100px);
+    height:100vh;
     background-color: pink;
   }
   &__top{
@@ -160,4 +219,18 @@
       }
     }
   }
+}
+
+
+/* About */
+.about{
+  @include page-area;
+  background-color: orange;
+}
+
+
+/* Contact */
+.contact{
+  @include page-area;
+  background-color: pink;
 }
