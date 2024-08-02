@@ -113,7 +113,6 @@ const main_sw = new Swiper('#sw_main', {
 });
 
 
-
 /****** Ui settings ******/
 /****** Click Events ******/
 $("#ui-page button").on("click", function (){
@@ -121,10 +120,6 @@ $("#ui-page button").on("click", function (){
   cateIdx = $(this).parent(".ui-page__item").index();
   $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
 });
-
-console.log("test")
-console.log("중요한코드어쩌구")
-
 
 
 /****** Click Events ******/
