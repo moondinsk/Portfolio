@@ -14,7 +14,7 @@ $("#ui-page button").on("click", function (){
 
 
 /****** Main Settings ******/
-const main_sw = new Swiper('#sw-main', {
+const main_sw = new Swiper('#sw_main', {
   loop: true,
   pagination: {
     el: '.swiper-pagination',
@@ -47,7 +47,6 @@ $('.view-more').on("click",function (){
 // 메인 - nav
 $("#ui-header_nav li").on("click", function (){
   mainIdx = $(this).index();
-  console.log(mainIdx)
   main_sw.slideTo(mainIdx, 500)
 });
 
