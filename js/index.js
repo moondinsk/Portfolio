@@ -5,23 +5,29 @@ const mainTotal = document.querySelectorAll('#ui-header_nav li').length;
 let cateIdx = 0;
 let mainIdx = 0;
 
-// Scene setup
+// 장면
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x3a414a);
 
-// Camera setup
-const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+// 카메라
+const camera = new THREE.PerspectiveCamera(
+  35,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 camera.position.z = 2;
 
-// Renderer setup
+// 렌더러
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.shadowMap.enabled = true;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1;
+renderer.shadowMap.enabled = true; // 그림자 ok
+renderer.toneMapping = THREE.ACESFilmicToneMapping; // 톤매핑
+renderer.toneMappingExposure = 1; // 톤매핑 값 설정
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('main_canvas').appendChild(renderer.domElement);
+const main_canvas = document.getElementById('main_canvas');
+main_canvas.appendChild(renderer.domElement);
 
-// Function to create shapes
+// 도형 추가
 function createShapes(count) {
   const spacing = 1;
   for (let i = 0; i < count; i++) {
@@ -34,7 +40,7 @@ function createShapes(count) {
 }
 createShapes(mainTotal);
 
-// Lighting setup
+// 빛
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
@@ -49,7 +55,6 @@ let startX = camera.position.x;
 let animationStartTime = 0;
 const animationDuration = 600;
 
-// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   const elapsedTime = clock.getElapsedTime() * 1000 - animationStartTime;
@@ -63,7 +68,6 @@ function animate() {
 }
 animate();
 
-// Handle slide change
 function handleSlideChange() {
   const distance = 1;
   let newXPosition = 1 + (mainIdx - 1) * distance;
@@ -72,12 +76,21 @@ function handleSlideChange() {
   animationStartTime = clock.getElapsedTime() * 1000; // Reset clock
 }
 
-// Swiper instance
+// 반응형 처리
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix(); // 종횡비 세팅
+  renderer.setSize(window.innerWidth, window.innerHeight); // 렌더러 세팅
+}
+window.addEventListener('resize', onWindowResize);
+
+// Main Settings
 const main_sw = new Swiper('#sw_main', {
   effect: 'fade',
   loop: true,
   pagination: {
     el: '.swiper-pagination',
+    clickable: true,
   },
   navigation: {
     nextEl: '.swiper-button-next',
@@ -88,63 +101,62 @@ const main_sw = new Swiper('#sw_main', {
   },
   keyboard: {
     enabled: true,
-    onlyInViewport: true,
+    onlyInViewport: true, // Only enable when swiper is in the viewport
   },
   on: {
     slideChange: function () {
       mainIdx = this.realIndex;
-      document.querySelectorAll("#ui-header_nav li").forEach((el, index) => {
-        if (index === mainIdx) {
-          el.classList.add("active");
-        } else {
-          el.classList.remove("active");
-        }
-      });
+      $("#ui-header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
       handleSlideChange();
     }
   }
 });
 
-// Responsive handling
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
-window.addEventListener('resize', onWindowResize);
 
-// Click Events
-document.querySelector("#ui-page button").addEventListener("click", function () {
-  this.parentElement.classList.add("active");
-  this.parentElement.siblings().classList.remove("active");
-  cateIdx = Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement);
-  document.querySelector("#page > *").classList.remove("show");
-  document.querySelectorAll("#page > *")[cateIdx].classList.add("show");
+
+/****** Ui settings ******/
+/****** Click Events ******/
+$("#ui-page button").on("click", function (){
+  $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
+  cateIdx = $(this).parent(".ui-page__item").index();
+  $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
 });
 
-document.querySelector('.view-more').addEventListener("click", function () {
+
+
+
+/****** Click Events ******/
+// 메인 - view-more 
+$('.view-more').on("click",function (){
   toggleMain();
   toggleWorks(mainIdx);
 });
 
-document.querySelectorAll("#ui-header_nav li").forEach((item, index) => {
-  item.addEventListener("click", function () {
-    mainIdx = index;
-    main_sw.slideTo(mainIdx, 500);
-  });
+// 메인 - nav
+$("#ui-header_nav li").on("click", function (){
+  mainIdx = $(this).index();
+  main_sw.slideTo(mainIdx, 500)
 });
 
-document.querySelector('.__works-close').addEventListener("click", function () {
+// 섹션 - close 
+$('.__works-close').on("click", function (){
   toggleMain();
   toggleWorks(mainIdx);
 });
 
-function toggleMain() {
-  document.getElementById("main").classList.toggle("show");
-  document.getElementById("header_right").classList.toggle("active");
+// 메인 열고닫기
+function toggleMain(){
+  $("#main").toggleClass("show");
+  $("#header_right").toggleClass("active")
 }
 
-function toggleWorks(mainIdx) {
-  document.getElementById("works").classList.toggle("show");
-  document.querySelectorAll("#works > section")[mainIdx].classList.toggle("show");
+// 섹션 idx 찾아 열고닫기
+function toggleWorks(mainIdx){
+  $("#works").toggleClass("show");
+  $("#works > section").eq(mainIdx).toggleClass("show");
 }
+
+
+
+/****** About Settings ******/
+/****** Click Events ******/
