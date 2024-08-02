@@ -122,6 +122,7 @@ $("#ui-page button").on("click", function (){
   $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
 });
 
+console.log("test")
 
 
 
