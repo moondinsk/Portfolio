@@ -123,6 +123,7 @@ $("#ui-page button").on("click", function (){
 });
 
 console.log("test")
+console.log("중요한코드어쩌구")
 
 
 
