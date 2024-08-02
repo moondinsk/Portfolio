@@ -122,7 +122,7 @@ $("#ui-page button").on("click", function (){
   $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
 });
 
-console.log("test")
+console.log("aaaa")
 console.log("중요한코드어쩌구")
 
 
