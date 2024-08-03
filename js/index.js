@@ -9,7 +9,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { LensDistortionShader } from '../static/shaders/LensDistortionShader.js'
 
-const mainTotal = document.querySelectorAll('#ui-header_nav li').length;
+let mainTotal = 4;
 let cateIdx = 0;
 let mainIdx = 0;
 
@@ -22,7 +22,7 @@ loader.setDRACOLoader(dracoLoader)
 
 // 장면
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x333333);
+scene.background = new THREE.Color(0x333f4d);
 
 // 카메라
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100)
@@ -72,7 +72,7 @@ function transformMesh(){
 
     // Define the matrial of the points
     const pointsMaterial = new THREE.PointsMaterial({
-        color: 0x5c0b17,
+        color: 0x18ffff,
         size: 0.1,
         blending: THREE.AdditiveBlending,
         transparent: true,
@@ -117,15 +117,10 @@ function transformMesh(){
 function introAnimation() {
   controls.enabled = false //disable orbit controls to animate the camera
   
-  new TWEEN.Tween(camera.position.set(0,-1,0 )).to({ // from camera position
-    x: 2, //desired x position to go
-    y: -0.4, //desired y position to go
-    z: 6.1 //desired z position to go
-  }, 6500) // time take to animate
-  .easing(TWEEN.Easing.Quadratic.InOut).start() // define delay, easing
+  new TWEEN.Tween(camera.position.set(0,-1,0 )).to({ x: 2, y: -0.4, z: 6.1 }, 6500) // time take to animate
+  .easing(TWEEN.Easing.Quadratic.InOut).start() 
   .onComplete(function () { //on finish animation
     controls.enabled = true //enable orbit controls
-    // document.querySelector('.main--title').classList.add('ended')
     setOrbitControlsLimits() //enable controls limits
     TWEEN.remove(this) // remove the animation from memory
   })
@@ -187,39 +182,42 @@ let m = new THREE.ShaderMaterial({
           gl_Position = vec4( position, 1.0 );
       }`,
   fragmentShader: `
-      varying vec2 vUv;
-      uniform float iTime;
-      uniform vec2 iResolution;
-      uniform vec2 mousePos;
+    varying vec2 vUv;
+    uniform float iTime;
+    uniform vec2 iResolution;
+    uniform vec2 mousePos;
 
-      #define N 16
-      #define PI 3.14159265
-      #define depth 1.0
-      #define rate 0.3
-      #define huecenter 0.5
+    #define N 16
+    #define PI 3.14159265
+    #define depth 1.0
+    #define rate 0.3
+    #define huecenter 0.5
 
-      vec3 hsv2rgb( in vec3 c )
-      {
-          vec3 rgb = clamp( abs(mod(c.y*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, .3 );
-          return c.x * mix( vec3(.1), rgb, 1.0);
-      }
+    vec3 hsv2rgb( in vec3 c )
+    {
+        vec3 rgb = clamp( abs(mod(c.y*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, .3 );
+        return c.x * mix( vec3(.1), rgb, 1.0);
+    }
 
-      void main(){
-          vec2 v = gl_FragCoord.xy/iResolution.xy;
-          float t = iTime * 0.08;
-          float r = 1.8;
-          float d = 0.0;
-          for (int i = 1; i < N; i++) {
-              d = (PI / float(N)) * (float(i) * 14.0);
-              r += length(vec2(rate*v.y, rate*v.x)) + 1.21;
-              v = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));
-          }
-          r = (sin(r*0.09)*0.5)+0.5;            
-          vec3 hsv = vec3(
-              mod(mousePos.x + huecenter, 1.0), 1.0-0.5*pow(max(r,0.0)*1.2,0.5), 1.0-0.2*pow(max(r,0.4)*2.2,6.0)
-          );
-          gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
-      }`
+    void main(){
+        vec2 v = gl_FragCoord.xy/iResolution.xy;
+        float t = iTime * 0.08;
+        float r = 1.8;
+        float d = 0.0;
+        for (int i = 1; i < N; i++) {
+            d = (PI / float(N)) * (float(i) * 14.0);
+            r += length(vec2(rate*v.y, rate*v.x)) + 1.21;
+            v = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));
+        }
+        r = (sin(r*0.09)*0.5)+0.5;            
+        // Set the hue value to represent blue color
+        vec3 hsv = vec3(
+            0.3, // Hue for blue (adjust as needed)
+            1.0-0.5*pow(max(r,0.0)*1.2,0.5), 
+            1.0-0.2*pow(max(r,0.4)*2.2,6.0)
+        );
+        gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
+    }`
   })
 const p = new THREE.Mesh(g, m)
 scene.add(p)
@@ -241,8 +239,8 @@ rendeLoop() //start rendering
 //// Mouse Event
 document.addEventListener('mousemove', (event) => {
   event.preventDefault()
-  cursor.x = event.clientX / window.innerWidth -0.3
-  cursor.y = event.clientY / window.innerHeight -0.3
+  cursor.x = event.clientX / window.innerWidth -0.5
+  cursor.y = event.clientY / window.innerHeight -0.5
   uniforms.mousePos.value.set(cursor.x, cursor.y, 0)
   m.uniforms.mousePos.value.set(cursor.x, cursor.y)
 }, false)
@@ -260,7 +258,6 @@ window.addEventListener('resize', () => {
 
 function slideAnimation() {
   controls.enabled = false; // Disable orbit controls to animate the camera
-  
   // Define the first tween animation (A -> B)
   const tweenToB = new TWEEN.Tween(camera.position)
     .to({ x: 0, y: -1, z: 0 }, 800) // Move to position B
@@ -275,7 +272,7 @@ function slideAnimation() {
           setOrbitControlsLimits(); // Enable controls limits
         })
         .start(); // Start the second animation
-    })
+      })
     .start(); // Start the first animation
 }
 

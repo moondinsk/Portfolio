@@ -169,3 +169,12 @@ html:not(.old-ie) .fadeInLeft.animated{visibility:visible;opacity:1;transform:tr
 @media (max-width:1280px){html:not(.old-ie) .fadeInRight, html:not(.old-ie) .fadeInLeft{transform:translateY(110px);}
 html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) .fadeInLeft.animated{transform:translateY(0);}
 }
+
+
+/* Fonts */
+@font-face {
+  font-family: 'SUIT-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}

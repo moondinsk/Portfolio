@@ -1,4 +1,7 @@
 /* Common */
+body{
+  background-color: #333f4d;
+}
 
 @mixin page-area{
   position:absolute;
@@ -18,8 +21,10 @@
 }
 .view-more {
   padding: 10px 14px;
-  border: 1px solid #222;
+  color:rgba(255,255,255,.7);
+  border: 1px solid rgba(255,255,255,.7);
   background-color: transparent;
+  transition: background-color .3s;
   &__span{
     display: block;
     font-size: 15px;
@@ -29,6 +34,10 @@
     margin-left: 50px;
     transform: translateY(1px);
   }
+
+  &:hover{
+    background-color:rgba(255,255,255,.3);
+  }
 }
 
 .wrap{
@@ -37,7 +46,6 @@
   max-width:1400px;
   margin:0 auto;
   height:100vh;
-  background-color: pink;
 }
 
 .ui{
@@ -46,7 +54,7 @@
   justify-content: space-between;
   height:100%;
   padding:20px;
-  background-color:beige;
+  color:rgba(200,200,200);
 
   /* Header */
   &-header{
@@ -61,7 +69,11 @@
           }
         }
         button{
-          opacity:.6;
+          opacity:.3;
+          font-family: 'Pretendard,sans-serif';
+          font-size:22px;
+          color:inherit;
+          letter-spacing: -1px;
           border:none;
           background-color: transparent;
           transition: opacity .3s;
@@ -74,26 +86,39 @@
     }
     &__right{
       display: flex;
-      gap:0 200px;
+      gap:0 50px;
+      margin-right:150px;
       opacity:0;
       visibility: hidden;
       transition:opacity .5s, visibility .5s;
       &.active{
         opacity:1;visibility:visible;
       }
+
+      & > span{
+        margin-top:6px;
+      }
     }
   }
   &-page{
     align-self:flex-start;
+    line-height: 1.5;
     z-index: 1;
 
     &__item{
+      opacity:.4;
+
       i{
+        position: relative;
+        top:-3px;
+        font-size:10px;
         opacity:0;
         transition:opacity .2s, padding .2s;
       }
       &:hover,
       &.active{
+      opacity:1;
+
         i{
           opacity:1;
           padding-right:5px;
@@ -101,6 +126,10 @@
       }
     }
     &__link{
+      font-size:18px;
+      color:inherit;
+      font-family:"Pretendard",sans-serif;
+      font-weight:500;
       border:none;
       background-color:transparent;
     }
@@ -112,6 +141,12 @@
     align-self:flex-end;
     justify-content: flex-end;
     z-index: 1;
+    &__sns{
+      &-link{
+        font-size:22px;
+        color:inherit;
+      }
+    }
   }
 }
 
@@ -150,15 +185,15 @@
     padding-bottom:150px;
     font-size:30px;
     &-wrap{
-      .swiper-slide{
-        *{
-          opacity:0;
-        }
-        &.swiper-slide-active *{
-          transition: opacity 1.5s;
-          opacity:1;
-        }
-      }
+      // .swiper-slide{
+      //   *{
+      //     opacity:0;
+      //   }
+      //   &.swiper-slide-active *{
+      //     transition: opacity 1.5s;
+      //     opacity:1;
+      //   }
+      // }
       &.swiper{
         .swiper-pagination-bullet{
           width:20px;
@@ -214,7 +249,6 @@
   &__area{
     overflow-y:auto;
     height:100vh;
-    background-color: pink;
   }
   &__top{
     display:flex;
