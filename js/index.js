@@ -9,7 +9,6 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { LensDistortionShader } from '../static/shaders/LensDistortionShader.js'
 
-let mainTotal = 4;
 let cateIdx = 0;
 let mainIdx = 0;
 
@@ -60,7 +59,7 @@ const tempPosition = new THREE.Vector3()
 
 function transformMesh(){
     // Loop to sample a coordinate for each points
-    for (let i = 0; i < 5000; i ++) {
+    for (let i = 0; i < 2000; i ++) {
         // Sample a random position in the model
         sampler.sample(tempPosition)
         // Push the coordinates of the sampled coordinates into the array
@@ -298,8 +297,7 @@ const main_sw = new Swiper('#sw_main', {
   on: {
     slideChange: function () {
       mainIdx = this.realIndex;
-      $("#ui-header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
-      // handleSlideChange();
+      $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
       slideAnimation();
     }
   }
@@ -317,36 +315,117 @@ $("#ui-page button").on("click", function (){
 
 /****** Click Events ******/
 // 메인 - view-more 
-$('.view-more').on("click",function (){
+$(".view-more").on("click",function (){
   toggleMain();
   toggleWorks(mainIdx);
 });
 
 // 메인 - nav
-$("#ui-header_nav li").on("click", function (){
+$("#ui_header_nav li").on("click", function (){
   mainIdx = $(this).index();
   main_sw.slideTo(mainIdx, 500)
 });
 
 // 섹션 - close 
-$('.__works-close').on("click", function (){
-  toggleMain();
+$(".__works-close").on("click", function (){
   toggleWorks(mainIdx);
+  toggleMain();
 });
 
 // 메인 열고닫기
 function toggleMain(){
   $("#main").toggleClass("show");
-  $("#header_right").toggleClass("active")
+  $("#ui_header_right").toggleClass("active");
+  $("#works > section").find(".animate-div").removeClass("animate-start");
+  $("#works > section").find(".start-animate").removeClass("start-animate");
+  $("#works > section").find(".animated").removeClass("animated");
 }
 
 // 섹션 idx 찾아 열고닫기
 function toggleWorks(mainIdx){
   $("#works").toggleClass("show");
   $("#works > section").eq(mainIdx).toggleClass("show");
+  start_animate();
+  $("#works > section").eq(mainIdx).find(".animate-div").toggleClass("animate-start");
+  $("#works > section").eq(mainIdx).find(".works__area").on("scroll", start_animate);
 }
 
-
+// Works 상세 개발 환경 오픈
+$(".__works_more").on("click", function (){
+  $(".__works_more").removeClass("active");
+  $(this).addClass("active");
+});
 
 /****** About Settings ******/
 /****** Click Events ******/
+
+
+/**********************************************/
+// Document Click
+/**********************************************/
+$(document).mouseup(function (e) {
+  if ($(".__works_more").has(e.target).length === 0) {
+      $(".__works_more").removeClass("active");
+  }
+});
+
+
+$(function (){
+  setTimeout(() => {
+    $("#ui").find(".animate-div").addClass("animate-start");
+  }, 3000);
+  setTimeout(() => {
+    $("#main").addClass("show");
+  }, 3800);
+});
+
+
+/**********************************************/
+// Animate element 
+/**********************************************/
+$.belowthefold = function(element, settings){
+  let fold = $(window).height() + $(window).scrollTop();
+  return fold <= $(element).offset().top - settings.threshold;
+};
+$.abovethetop = function(element, settings){
+  let top = $(window).scrollTop();
+  return top >= $(element).offset().top + $(element).height() - settings.threshold;
+};
+$.rightofscreen = function(element, settings){
+  let fold = $(window).width() + $(window).scrollLeft();
+  return fold <= $(element).offset().left - settings.threshold;
+};
+$.leftofscreen = function(element, settings){
+  let left = $(window).scrollLeft();
+  return left >= $(element).offset().left + $(element).width() - settings.threshold;
+};
+$.inviewport = function(element, settings){
+  return !$.rightofscreen(element, settings) && !$.leftofscreen(element, settings) && !$.belowthefold(element, settings) && !$.abovethetop(element, settings);
+};
+$.extend($.expr[':'], {
+  "below-the-fold": function(a, i, m) {
+    return $.belowthefold(a, {threshold : 0});
+  },"above-the-top": function(a, i, m) {
+    return $.abovethetop(a, {threshold : 0});
+  },"left-of-screen": function(a, i, m) {
+    return $.leftofscreen(a, {threshold : 0});
+  },"right-of-screen": function(a, i, m) {
+    return $.rightofscreen(a, {threshold : 0});
+  },"in-viewport": function(a, i, m) {
+    return $.inviewport(a, {threshold : -250});
+  }
+});
+
+function start_animate(){
+  let j = 0;
+  $(".animate-element:in-viewport").each(function(){
+    let $this = $(this);
+    if(!$this.hasClass("start-animate") && !$this.hasClass("animated")){
+      $this.addClass("start-animate");
+      setTimeout(function(){
+        $this.addClass("animated");
+      }, 250 * j);
+      j++;
+    };
+  });
+}

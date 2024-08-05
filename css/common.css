@@ -178,3 +178,24 @@ html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) .fadeInLeft.animated{
   font-weight: normal;
   font-style: normal;
 }
+
+
+
+/*--------------------------------------------------------------------------
+| Animation
+|--------------------------------------------------------------------------*/
+
+/* Common Animation */
+html:not(.old-ie) .animate-element{transition:visibility 1.1s ease, opacity 1.1s ease, transform 1.1s ease}
+
+/* Fade */
+html:not(.old-ie) .fadeIn{visibility:hidden;opacity:0}
+html:not(.old-ie) .fadeIn.animated, html:not(.old-ie) body.is-mobile .fadeIn{visibility:visible;opacity:1}
+html:not(.old-ie) .fadeInUp{position:relative;visibility:hidden;opacity:0;transform:translateY(110px)}
+html:not(.old-ie) .fadeInUp.animated, html:not(.old-ie) body.is-mobile .fadeInUp{visibility:visible;opacity:1;transform:translateY(0)}
+html:not(.old-ie) .fadeInDown{position:relative;visibility:hidden;opacity:0;transform:translateY(-110px)}
+html:not(.old-ie) .fadeInDown.animated, html:not(.old-ie) body.is-mobile .fadeInDown{visibility:visible;opacity:1;transform:translateY(0)}
+html:not(.old-ie) .fadeInRight{position:relative;visibility:hidden;opacity:0;transform:translateX(-110px)}
+html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) body.is-mobile .fadeInRight{visibility:visible;opacity:1;transform:translateX(0)}
+html:not(.old-ie) .fadeInLeft{position:relative;visibility:hidden;opacity:0;transform:translateX(110px)}
+html:not(.old-ie) .fadeInLeft.animated, html:not(.old-ie) body.is-mobile .fadeInLeft{visibility:visible;opacity:1;transform:translateY(0)}
