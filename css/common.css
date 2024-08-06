@@ -171,16 +171,6 @@ html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) .fadeInLeft.animated{
 }
 
 
-/* Fonts */
-@font-face {
-  font-family: 'SUIT-Regular';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-
-
 /*--------------------------------------------------------------------------
 | Animation
 |--------------------------------------------------------------------------*/
@@ -199,3 +189,4 @@ html:not(.old-ie) .fadeInRight{position:relative;visibility:hidden;opacity:0;tra
 html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) body.is-mobile .fadeInRight{visibility:visible;opacity:1;transform:translateX(0)}
 html:not(.old-ie) .fadeInLeft{position:relative;visibility:hidden;opacity:0;transform:translateX(110px)}
 html:not(.old-ie) .fadeInLeft.animated, html:not(.old-ie) body.is-mobile .fadeInLeft{visibility:visible;opacity:1;transform:translateY(0)}
+

@@ -9,26 +9,19 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { LensDistortionShader } from '../static/shaders/LensDistortionShader.js'
 
-let cateIdx = 0;
-let mainIdx = 0;
-
-//// DRACO LOADER TO LOAD DRACO COMPRESSED MODELS FROM BLENDER
 const dracoLoader = new DRACOLoader()
 const loader = new GLTFLoader()
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
 dracoLoader.setDecoderConfig({ type: 'js' })
 loader.setDRACOLoader(dracoLoader)
 
-// 장면
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x333f4d);
 
-// 카메라
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100)
 camera.position.set(45,16,-20)
 scene.add(camera)
 
-// 렌더러
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }) // turn on antialias
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) //set pixel ratio
 renderer.setSize(window.innerWidth, window.innerHeight) // make it full screen
@@ -36,17 +29,15 @@ renderer.outputEncoding = THREE.sRGBEncoding // set color encoding
 const container = document.getElementById('main_canvas');
 container.appendChild(renderer.domElement);
 
-///// CREATE ORBIT CONTROLS
 const controls = new OrbitControls(camera, renderer.domElement)
 
-///// LOADING GLB/GLTF MODEL FROM BLENDER
 loader.load('models/gltf/Skull.glb', function (gltf) {
-    gltf.scene.traverse((obj) => {
-        if (obj.isMesh) {
-            sampler = new MeshSurfaceSampler(obj).build()
-        }
-    })
-    transformMesh()
+  gltf.scene.traverse((obj) => {
+    if (obj.isMesh) {
+      sampler = new MeshSurfaceSampler(obj).build()
+    }
+  })
+  transformMesh()
 })
 
 ///// 매쉬를 포인터로
@@ -58,58 +49,51 @@ const vertices = []
 const tempPosition = new THREE.Vector3()
 
 function transformMesh(){
-    // Loop to sample a coordinate for each points
-    for (let i = 0; i < 2000; i ++) {
-        // Sample a random position in the model
-        sampler.sample(tempPosition)
-        // Push the coordinates of the sampled coordinates into the array
-        vertices.push(tempPosition.x, tempPosition.y, tempPosition.z)
-    }
-    
-    // Define all points positions from the previously created array
-    pointsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
+  // Loop to sample a coordinate for each points
+  for (let i = 0; i < 2000; i ++) {
+      // Sample a random position in the model
+      sampler.sample(tempPosition)
+      // Push the coordinates of the sampled coordinates into the array
+      vertices.push(tempPosition.x, tempPosition.y, tempPosition.z)
+  }
+  
+  // Define all points positions from the previously created array
+  pointsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
 
-    // Define the matrial of the points
-    const pointsMaterial = new THREE.PointsMaterial({
-        color: 0x18ffff,
-        size: 0.1,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-        opacity: 0.8,
-        depthWrite: false,
-        sizeAttenuation: true,
-        alphaMap: new THREE.TextureLoader().load('particle-texture.jpg')
-    })
+  // Define the matrial of the points
+  const pointsMaterial = new THREE.PointsMaterial({
+    color: 0x18ffff,
+    size: 0.1,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.8,
+    depthWrite: false,
+    sizeAttenuation: true,
+    alphaMap: new THREE.TextureLoader().load('particle-texture.jpg')
+  })
 
-    // Create the custom vertex shader injection
-    pointsMaterial.onBeforeCompile = function(shader) {
-        shader.uniforms.mousePos = uniforms.mousePos
-        
-        shader.vertexShader = `
-          uniform vec3 mousePos;
-          varying float vNormal;
-          
-          ${shader.vertexShader}`.replace(
-          `#include <begin_vertex>`,
-          `#include <begin_vertex>   
-            vec3 seg = position - mousePos;
-            vec3 dir = normalize(seg);
-            float dist = length(seg);
-            if (dist < 1.5){
-              float force = clamp(1.0 / (dist * dist), -0., .5);
-              transformed += dir * force;
-              vNormal = force /0.5;
-            }
-          `
-        )
-    }
-
-    // Create an instance of points based on the geometry & material
-    const points = new THREE.Points(pointsGeometry, pointsMaterial)
-
-    // Add them into the main group
-    scene.add(points)
-
+  // Create the custom vertex shader injection
+  pointsMaterial.onBeforeCompile = function(shader) {
+    shader.uniforms.mousePos = uniforms.mousePos
+    shader.vertexShader = `
+      uniform vec3 mousePos;
+      varying float vNormal;
+      ${shader.vertexShader}`.replace(
+      `#include <begin_vertex>`,
+      `#include <begin_vertex>   
+        vec3 seg = position - mousePos;
+        vec3 dir = normalize(seg);
+        float dist = length(seg);
+        if (dist < 1.5){
+          float force = clamp(1.0 / (dist * dist), -0., .5);
+          transformed += dir * force;
+          vNormal = force /0.5;
+        }
+      `
+    )
+  }
+  const points = new THREE.Points(pointsGeometry, pointsMaterial)
+  scene.add(points)
 }
 
 //// 인트로 - 카메라 무빙, tween
@@ -149,11 +133,8 @@ const renderTarget = new THREE.WebGLRenderTarget( width, height,
     format: THREE.RGBAFormat
   }
 )
-
 const composer = new EffectComposer(renderer, renderTarget)
 composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/////DISTORT PASS //////////////////////////////////////////////////////////////
 const distortPass = new ShaderPass( LensDistortionShader )
 distortPass.material.defines.CHROMA_SAMPLES = 4
 distortPass.enabled = true
@@ -275,7 +256,65 @@ function slideAnimation() {
     .start(); // Start the first animation
 }
 
-// Main Settings
+
+let cateIdx = 0;
+let mainIdx = 0;
+
+/**********************************************/
+// Ui
+/**********************************************/
+// 메인 열고닫기
+function toggleMain(){
+  $("#main").toggleClass("show");
+  $("#ui_header_right").toggleClass("active");
+  $("#works > section").find(".animate-div").removeClass("animate-start");
+  $("#works > section").find(".start-animate").removeClass("start-animate");
+  $("#works > section").find(".animated").removeClass("animated");
+}
+
+// 섹션 idx 찾아 열고닫기
+function toggleWorks(mainIdx){
+  $("#works").toggleClass("show");
+  $("#works > section").eq(mainIdx).toggleClass("show");
+  start_animate();
+  $("#works > section").eq(mainIdx).find(".animate-div").toggleClass("animate-start");
+  $("#works > section").eq(mainIdx).find(".works__area").on("scroll", start_animate);
+  setTimeout(() => {
+    $("#works > section").eq(mainIdx).find(".works__area").scrollTop(0);
+  }, 400);
+}
+
+// Ui
+$("#ui-page button").on("click", function (){
+  $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
+  cateIdx = $(this).parent(".ui-page__item").index();
+  $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
+  if(cateIdx === 0){
+    $("body").removeClass("st1")
+    $("#ui_header_right").addClass("active");
+    $("#main").addClass("show");
+    $(".about__area").scrollTop(0);
+  }else if(cateIdx === 1){
+    $("body").addClass("st1")
+    $("#ui_header_right").removeClass("active");
+    $("#works").removeClass("show");
+    $(".works__wrap").removeClass("show");
+  }
+});
+
+// Nav
+$("#ui_header_nav li").on("click", function (){
+  mainIdx = $(this).index();
+  main_sw.slideTo(mainIdx, 500)
+});
+
+
+
+/**********************************************/
+// Projects
+/**********************************************/
+/****** Main ******/
+// 세팅
 const main_sw = new Swiper('#sw_main', {
   effect: 'fade',
   loop: true,
@@ -303,73 +342,70 @@ const main_sw = new Swiper('#sw_main', {
   }
 });
 
-
-/****** Ui settings ******/
-/****** Click Events ******/
-$("#ui-page button").on("click", function (){
-  $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
-  cateIdx = $(this).parent(".ui-page__item").index();
-  $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
-});
-
-
-/****** Click Events ******/
 // 메인 - view-more 
 $(".view-more").on("click",function (){
   toggleMain();
   toggleWorks(mainIdx);
 });
 
-// 메인 - nav
-$("#ui_header_nav li").on("click", function (){
-  mainIdx = $(this).index();
-  main_sw.slideTo(mainIdx, 500)
-});
-
-// 섹션 - close 
+// Works 섹션 - close 
 $(".__works-close").on("click", function (){
   toggleWorks(mainIdx);
   toggleMain();
 });
 
-// 메인 열고닫기
-function toggleMain(){
-  $("#main").toggleClass("show");
-  $("#ui_header_right").toggleClass("active");
-  $("#works > section").find(".animate-div").removeClass("animate-start");
-  $("#works > section").find(".start-animate").removeClass("start-animate");
-  $("#works > section").find(".animated").removeClass("animated");
-}
-
-// 섹션 idx 찾아 열고닫기
-function toggleWorks(mainIdx){
-  $("#works").toggleClass("show");
-  $("#works > section").eq(mainIdx).toggleClass("show");
-  start_animate();
-  $("#works > section").eq(mainIdx).find(".animate-div").toggleClass("animate-start");
-  $("#works > section").eq(mainIdx).find(".works__area").on("scroll", start_animate);
-}
-
-// Works 상세 개발 환경 오픈
+// Works 상세 개발 환경 View more
 $(".__works_more").on("click", function (){
   $(".__works_more").removeClass("active");
   $(this).addClass("active");
 });
-
-/****** About Settings ******/
-/****** Click Events ******/
-
-
-/**********************************************/
-// Document Click
-/**********************************************/
 $(document).mouseup(function (e) {
   if ($(".__works_more").has(e.target).length === 0) {
-      $(".__works_more").removeClass("active");
+    $(".__works_more").removeClass("active");
+  }
+});
+
+// Works 신규사이트 ALL 불러오기
+const site_new = [
+  { title: "cosmobee", url: "#", src:"/img/works/project1-1_preview.JPG", category: "우주/항공", role: "100" },
+  { title: "galactic", url: "#", src:"#", category: "space", role: "100" },
+  { title: "stardust", url: "#", src:"#", category: "astronomy", role: "100" }
+];
+const siteListDiv = document.getElementById('works_new_list');
+const siteListHTML = site_new.map(site => `
+  <li class="works__grid-item">
+    <a href="${site.url}" class="works__grid-link" target="_blank">
+      <div class="img-wrap"><img src="${site.src}"></div>
+      <div class="works__grid-inner">
+        <span>${site.category}</span>
+        <h4>${site.title}<i class="xi-external-link"></i></h4>
+        <p>기여도 ${site.role}%</p>
+      </div>
+    </a>
+  </li>
+`).join(''); 
+siteListDiv.innerHTML = siteListHTML;
+
+
+/**********************************************/
+// About
+/**********************************************/
+const about_sw = new Swiper('#sw_about', {
+  autoplay:true,
+  slidesPerView: 3,
+  spaceBetween: 30,
+  loop: true,
+  on: {
+    slideChange: function () {
+    }
   }
 });
 
 
+
+/**********************************************/
+// Window 시작
+/**********************************************/
 $(function (){
   setTimeout(() => {
     $("#ui").find(".animate-div").addClass("animate-start");
@@ -378,6 +414,7 @@ $(function (){
     $("#main").addClass("show");
   }, 3800);
 });
+
 
 
 /**********************************************/
