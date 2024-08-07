@@ -342,29 +342,6 @@ const main_sw = new Swiper('#sw_main', {
   }
 });
 
-// 메인 - view-more 
-$(".view-more").on("click",function (){
-  toggleMain();
-  toggleWorks(mainIdx);
-});
-
-// Works 섹션 - close 
-$(".__works-close").on("click", function (){
-  toggleWorks(mainIdx);
-  toggleMain();
-});
-
-// Works 상세 개발 환경 View more
-$(".__works_more").on("click", function (){
-  $(".__works_more").removeClass("active");
-  $(this).addClass("active");
-});
-$(document).mouseup(function (e) {
-  if ($(".__works_more").has(e.target).length === 0) {
-    $(".__works_more").removeClass("active");
-  }
-});
-
 // Works 신규사이트 ALL 불러오기
 const site_new = [
   { title: "cosmobee", url: "#", src:"/img/works/project1-1_preview.JPG", category: "우주/항공", role: "100" },
@@ -385,6 +362,42 @@ const siteListHTML = site_new.map(site => `
   </li>
 `).join(''); 
 siteListDiv.innerHTML = siteListHTML;
+
+$(function (){
+  // 메인 - view-more 
+  $(".view-more").on("click",function (){
+    toggleMain();
+    toggleWorks(mainIdx);
+  });
+
+  // Works 섹션 - close 
+  $(".__works-close").on("click", function (){
+    toggleWorks(mainIdx);
+    toggleMain();
+  });
+
+  // Works 상세 개발 환경 View more
+  $(".__works_more").on("click", function (){
+    $(".__works_more").removeClass("active");
+    $(this).addClass("active");
+  });
+  $(document).mouseup(function (e) {
+    if ($(".__works_more").has(e.target).length === 0) {
+      $(".__works_more").removeClass("active");
+    }
+  });
+
+  // 스크롤다운
+  $(".works__area").on("scroll", function() {
+    let wks_top = $(this).scrollTop();
+    if (wks_top === 0) {
+      $(".works__scroll").addClass("active");
+    }else{
+      $(".works__scroll").removeClass("active");
+    }
+  });
+})
+
 
 
 /**********************************************/
