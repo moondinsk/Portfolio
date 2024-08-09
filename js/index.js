@@ -344,9 +344,40 @@ const main_sw = new Swiper('#sw_main', {
 
 // Works 신규사이트 ALL 불러오기
 const site_new = [
-  { title: "cosmobee", url: "#", src:"/img/works/project1-1_preview.JPG", category: "우주/항공", role: "100" },
-  { title: "galactic", url: "#", src:"#", category: "space", role: "100" },
-  { title: "stardust", url: "#", src:"#", category: "astronomy", role: "100" }
+  { title: "코스모비", url: "https://www.cosmobee.co.kr/", src:"/img/works/pro_34.jpg", category: "우주/항공", role: "100%" },
+  { title: "코드비전", url: "https://codevision.kr/", src:"/img/works/pro_33.jpg", category: "IT", role: "100%" },
+  { title: "포스코 청암재단", url: "https://postf.org/", src:"/img/works/pro_01.jpg", category: "기관", role: "80% (서브)" },
+  { title: "연세대학교 이과대학", url: "http://scienceyonsei.kr/", src:"/img/works/pro_02.jpg", category: "교육", role: "70% (서브)" },
+  { title: "섬유수출입협회", url: "https://textra.or.kr/", src:"/img/works/pro_03.jpg", category: "기관", role: "100%" },
+  { title: "한솔로지스틱스", url: "https://www.hansollogistics.com/", src:"/img/works/pro_04.jpg", category: "물류", role: "70% (서브)" },
+  { title: "일동제약몰", url: "https://ildongmall.co.kr/?brandName=biovita", src:"/img/works/pro_05.jpg", category: "바이오", role: "100%" },
+  { title: "ESR켄달스퀘어", url: "https://www.esrks-reit.com/", src:"/img/works/pro_06.jpg", category: "물류", role: "70% (서브)" },
+  { title: "JETTE", url: "https://jette.co.kr/", src:"/img/works/pro_07.jpg", category: "물류", role: "100%" },
+  { title: "서울대 의료양성사업단", url: "http://snuaimed.org/", src:"/img/works/pro_08.jpg", category: "교육", role: "100% (서브)" },
+  { title: "한솔로지스유", url: "https://hansollogisyou.com/", src:"/img/works/pro_09.jpg", category: "물류", role: "100% (서브)" },
+  { title: "귀뚜라미환경테크", url: "https://kituramiet.com/", src:"/img/works/pro_10.jpg", category: "기관", role: "100%" },
+  { title: "한국노바티스", url: "http://cusleep.co.kr/", src:"/img/works/pro_11.jpg", category: "바이오", role: "100%" },
+  { title: "이노큐브", url: "https://www.innocuve.com/", src:"/img/works/pro_12.jpg", category: "바이오", role: "100% (서브)" },
+  { title: "팬스타", url: "https://www.panstar.co.kr/", src:"/img/works/pro_13.jpg", category: "물류", role: "80% (서브)" },
+  { title: "NOW건축사무소", url: "http://www.nowarch.com/", src:"/img/works/pro_14.jpg", category: "건축", role: "100% (서브)" },
+  { title: "NOW CM", url: "http://www.nowcm.co.kr/", src:"/img/works/pro_32.jpg", category: "건축", role: "100%" },
+  { title: "SY탱크터미널", url: "http://www.sytankterminal.co.kr/", src:"/img/works/pro_15.jpg", category: "물류", role: "100%" },
+  { title: "도시락통", url: "https://dosiraktong.com/Main/Index", src:"/img/works/pro_16.jpg", category: "서비스", role: "100" },
+  { title: "서울대 MBRC", url: "https://www.healthbigdata.org/", src:"/img/works/pro_17.jpg", category: "교육", role: "80% (서브)" },
+  { title: "Merlotlab", url: "https://merlotlab.com/", src:"/img/works/pro_18.jpg", category: "IT", role: "100% (서브)" },
+  { title: "위더스애드", url: "https://withusad.co.kr/", src:"/img/works/pro_19.jpg", category: "광고", role: "80% (서브)" },
+  { title: "에너지컨설팅", url: "http://energyconsulting.co.kr/", src:"/img/works/pro_20.jpg", category: "기술", role: "100% (서브)" },
+  { title: "호현애프엔씨", url: "http://www.hohyun.co.kr/", src:"/img/works/pro_21.jpg", category: "기술", role: "100%" },
+  { title: "심플랫폼", url: "https://www.simplatform.com/ko/index.html", src:"/img/works/pro_22.jpg", category: "IT", role: "100% (서브)" },
+  { title: "연세대 화학과", url: "https://chemyonsei.kr/", src:"/img/works/pro_23.jpg", category: "교육", role: "100% (서브)" },
+  { title: "케이디건축사무소", url: "http://kdeng.co.kr/", src:"/img/works/pro_24.jpg", category: "건축", role: "100%" },
+  { title: "특허법인 시공", url: "https://sigong-ip.com/", src:"/img/works/pro_25.jpg", category: "법률", role: "100%" },
+  { title: "AGMG", url: "https://agmg.cafe24.com/", src:"/img/works/pro_26.jpg", category: "기업", role: "100%" },
+  { title: "법무법인 제승", url: "https://revivelaw.co.kr/", src:"/img/works/pro_27.jpg", category: "법률", role: "80% (서브)" },
+  { title: "대웅제약 idsTrust", url: "https://www.idstrust.com/", src:"/img/works/pro_28.jpg", category: "바이오", role: "100% (서브)" },
+  { title: "Lipac", url: "https://lipac.co.kr/", src:"/img/works/pro_29.jpg", category: "기술", role: "80% (서브)" },
+  { title: "Lamp7", url: "https://www.swrobot.com/", src:"/img/works/pro_30.jpg", category: "IT", role: "100%" },
+  { title: "아이앤테라퓨틱스", url: "http://www.intherapeutics.com/", src:"/img/works/pro_31.jpg", category: "바이오", role: "100%" },
 ];
 const siteListDiv = document.getElementById('works_new_list');
 const siteListHTML = site_new.map(site => `
@@ -356,7 +387,7 @@ const siteListHTML = site_new.map(site => `
       <div class="works__grid-inner">
         <span>${site.category}</span>
         <h4>${site.title}<i class="xi-external-link"></i></h4>
-        <p>기여도 ${site.role}%</p>
+        <p>기여도 ${site.role}</p>
       </div>
     </a>
   </li>
@@ -403,16 +434,23 @@ $(function (){
 /**********************************************/
 // About
 /**********************************************/
-const about_sw = new Swiper('#sw_about', {
-  autoplay:true,
-  slidesPerView: 3,
-  spaceBetween: 30,
-  loop: true,
-  on: {
-    slideChange: function () {
+function about_sec(){
+  gsap.to("#about_imgs .img1", {
+    scale: 2, duration: 1.5
+  });
+
+  const about_sw = new Swiper('#sw_about', {
+    autoplay:true,
+    slidesPerView: 3,
+    spaceBetween: 30,
+    loop: true,
+    on: {
+      slideChange: function () {
+      }
     }
-  }
-});
+  });
+}
+
 
 
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+*{margin:0;padding:0;}
+section{text-align: center;}
+.section2{height:50vh;background-color: #e5e5e5;}
+#md_scr_c{padding:100px 0;}
+#md_scr_c p{margin-top:50px;}
+.md-scr-c{display: flex;align-items: center;justify-content: center;gap:0 100px;margin-top:50px;}
+.md-scr-c figure{position: relative;width:300px;overflow:hidden;border-radius: 20px;}
+.md-scr-c figure::before{content:"";display: block;position: relative;padding-top:50%;transition:padding ease-in .5s;}
+.md-scr-c .md-scr-c--scale::before{padding-top:80%;}
+.md-scr-c .figure1.md-scr-c--scale::before{padding-top:120%;}
+.md-scr-c .figure3.md-scr-c--scale::before{padding-top:110%;}
+.md-scr-c .img{position: absolute;top:50%;left:50%;width:400px;transform:translate(-50%, -50%);}
+.md-scr-c .img-mask{position:absolute;top:0;left:0;width:100%;height:100%;background-color: rgba(0,0,0,.6);}
+
+  </style>
+</head>
+<body>
+<section id="md_scr_c">
+  <h1>Lorem ipsum <br>dolor sit amet <br>consectetur <br>adipisicing elit.</h1>
+  <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit.<br> Neque, cupiditate provident beatae vel voluptas, <br>accusamus pariatur consequatur quisquam at voluptatum quia accusantium <br>nisi doloribus ex quaerat voluptate ipsum.<br> Dolor, magni. Magnam, velit obcaecati. <br>Lorem ipsum dolor sit amet consectetur adipisicing elit.<br> Vero tempora quo debitis laborum, quod eos hic quibusdam.<br> Quam quisquam optio maiores necessitatibus consectetur sapiente, <br>sunt reiciendis officiis laborum ex ut totam facere voluptas, <br>esse vel ab suscipit quaerat ipsa exercitationem.</p>
+  <div class="md-scr-c">
+    <figure class="figure figure1"><div class="img"><img src="https://cdn.prod.website-files.com/663943bed8a37337f94a3f67/664796d816ea85ec6d5e5d5a_about_1_vid_frame-p-500.webp" alt=""></div><span class="img-mask"></span></figure>
+    <figure class="figure figure2"><div class="img"><img src="https://cdn.prod.website-files.com/663943bed8a37337f94a3f67/6647873f9a00a00b9980599a_Home_2.webp" alt=""></div><span class="img-mask"></span></figure>
+    <figure class="figure figure3"><div class="img"><img src="https://cdn.prod.website-files.com/663943bed8a37337f94a3f67/664796726c0fa34d7ad1b9fd_About_1.webp" alt=""></div><span class="img-mask"></span></figure>
+  </div>
+</section>
+<section class="section2">section 2</section>
+</body>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+const figure = document.querySelectorAll("figure");
+const sec = document.querySelector("#md_scr_c");
+document.addEventListener("DOMContentLoaded", function() {
+  figure.forEach(function(figure) {
+    figure.classList.add("md-scr-c--scale");
+  });
+});
+gsap.to(".img-mask", {
+  opacity:0,
+  scrollTrigger: {
+    trigger:sec,
+    scrub: true,
+    start: "top", 
+    end: "bottom center", 
+  },
+});
+gsap.to(".md-scr-c .figure1", {
+  scrollTrigger:{
+    trigger:sec,
+    scrub: true,
+    start: "top", 
+    end: "bottom center", 
+  },
+  y:"80px",
+})
+gsap.to(".md-scr-c .figure1 img", {
+  scrollTrigger:{
+    trigger:sec,
+    scrub: true,
+    start: "top", 
+    end: "bottom center", 
+  },
+  y:"100px",
+})
+gsap.to(".md-scr-c .figure1", {
+  scrollTrigger:{
+    trigger:sec,
+    scrub: true,
+    start: "top", 
+    end: "bottom center", 
+  },
+  y:"80px",
+})
+gsap.to(".md-scr-c .figure3 img", {
+  scrollTrigger:{
+    trigger:sec,
+    scrub: true,
+    start: "top", 
+    end: "bottom center", 
+  },
+  y:"-50px",
+})
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScrollTrigger</title>
+<link rel="stylesheet" href="../src/css/common.css">
+<style>
+*,h2,p{padding:0;margin:0;}
+@font-face {font-family: 'GowunBatang-Regular';src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunBatang-Regular.woff') format('woff');font-weight: normal;font-style: normal;}
+.section{display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden;}
+.section2{height:600px;background-color: #dddbd4;}
+.md-scr-a{display:flex;align-items:center;justify-content:center;min-height:700px;padding:100px 20px;}
+.md-scr-a__inner{display:flex;align-items:center;justify-content:center;gap:80px;width:100%;max-width:1200px;margin:0 auto;}
+.md-scr-a__img-wrap{flex-shrink:0;position:relative;width:40%;overflow:hidden;}
+.md-scr-a__img-wrap::before{content:"";display:block;padding-top:100%;}
+.md-scr-a__img{position:absolute;top:-50px;left:50%;display:block;width:100%;transform:translateX(-50%);}
+.md-scr-a__mask{position: absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.9);}
+.md-scr-a__text-wrap{width:45%;}
+.md-scr-a__text-wrap h2{font-family: 'GowunBatang-Regular', sans-serif;font-size:25px;}
+.md-scr-a__text-wrap p{margin-top:20px;font-size:15px;color:#777;}
+@media (max-width:1024px){
+  .md-scr-a{min-height:0;}
+  .md-scr-a__inner{flex-direction: column;gap:50px 0;min-height:0;}
+  .md-scr-a__img-wrap,
+  .md-scr-a__text-wrap{width:100%;}
+  .md-scr-a__img-wrap::before{padding-top:50%;}
+}
+</style>
+</head>
+<body>
+<section class="section1 section md-scr-b">
+  <figure><img src="https://wendelbo.dk/wp-content/uploads/2024/08/Wendelbo_Duvet_Blend-col.-3001_Floema-side-table_Small_300-dpi-1-kopier.jpg" alt=""></figure>
+</section>
+<section id="section2" class="md-scr-a">
+  <div class="md-scr-a__inner">
+    <div class="md-scr-a__img-wrap">
+      <img src="https://wendelbo.dk/wp-content/uploads/2024/06/Wendelbo_Duvet_Skecthes_72-dpi.jpg" id="main_img1" class="md-scr-a__img" alt="">
+      <span id="main_mask1" class="md-scr-a__mask"></span>
+    </div>
+    <div class="md-scr-a__text-wrap">
+      <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h2>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus repellendus reprehenderit at. Dolores ullam deserunt commodi architecto? Sunt voluptatum minima officiis itaque doloremque, ducimus laudantium sit facere, libero dolor magni!</p>
+    </div>
+  </div>
+</section>
+<section class="section2 section"></section>
+<section id="section4" class="md-scr-a">
+  <div class="md-scr-a__inner">
+    <div class="md-scr-a__img-wrap">
+      <img src="https://wendelbo.dk/wp-content/uploads/2024/05/Folium_Dining-chair_Grain-col.-68243_72-dpi.jpg" id="main_img2" class="md-scr-a__img" alt="">
+      <span id="main_mask2" class="md-scr-a__mask"></span>
+    </div>
+    <div class="md-scr-a__text-wrap">
+      <h2>Nihil quasi quam debitis inventore qui neque beatae libero dignissimos dolorem saepe, totam quibusdam molestiae laborum.</h2>
+      <p>Sunt voluptatum minima officiis itaque doloremque, ducimus laudantium sit facere, libero dolor magni! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi aliquam unde asperiores sapiente nesciunt repellendus odio, quod, eveniet illum, animi voluptas distinctio. Suscipit maiores ipsum quod doloremque vel repudiandae. Nihil quasi quam debitis inventore qui neque beatae libero dignissimos dolorem saepe, totam quibusdam molestiae laborum.</p>
+    </div>
+  </div>
+</section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+// section2
+const sec2 = document.querySelector("#section2");
+const main_mask = document.querySelector("#main_mask1");
+gsap.to("#main_mask1", {
+  scrollTrigger :{ 
+    trigger: sec2,
+    scrub:1, 
+    start: "top 50%",
+    end:"bottom 60%",
+  },
+  opacity:0,
+});
+gsap.to("#main_img1", {
+  scrollTrigger:{
+    trigger: sec2,
+    scrub:1, 
+    start: "top 50%",
+    end:"bottom 60%",
+  },
+  y:50,
+});
+
+// section4
+const sec4 = document.querySelector("#section4");
+const mask2 = document.querySelector("#main_mask2");
+gsap.to("#main_mask2", {
+  scrollTrigger :{ 
+    trigger: sec4,
+    scrub:1, 
+    start: "top 50%",
+    end:"bottom top"
+  },
+  opacity:0,
+});
+gsap.to("#main_img2", {
+  scrollTrigger:{
+    trigger: sec4,
+    scrub:1, 
+    start: "top 50%",
+    end:"bottom top",
+  },
+  y:50,
+});
+</script>
+</html>

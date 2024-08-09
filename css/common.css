@@ -190,3 +190,10 @@ html:not(.old-ie) .fadeInRight.animated, html:not(.old-ie) body.is-mobile .fadeI
 html:not(.old-ie) .fadeInLeft{position:relative;visibility:hidden;opacity:0;transform:translateX(110px)}
 html:not(.old-ie) .fadeInLeft.animated, html:not(.old-ie) body.is-mobile .fadeInLeft{visibility:visible;opacity:1;transform:translateY(0)}
 
+
+@font-face {
+  font-family: 'BookkMyungjo-Bd';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkMyungjo-Bd.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
