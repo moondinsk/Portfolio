@@ -50,7 +50,7 @@ const tempPosition = new THREE.Vector3()
 
 function transformMesh(){
   // Loop to sample a coordinate for each points
-  for (let i = 0; i < 2000; i ++) {
+  for (let i = 0; i < 1000; i ++) {
       // Sample a random position in the model
       sampler.sample(tempPosition)
       // Push the coordinates of the sampled coordinates into the array
@@ -268,45 +268,42 @@ function toggleMain(){
   $("#main").toggleClass("show");
   $("#ui_header_right").toggleClass("active");
   $("#works > section").find(".animate-div").removeClass("animate-start");
-  $("#works > section").find(".start-animate").removeClass("start-animate");
-  $("#works > section").find(".animated").removeClass("animated");
 }
 
 // 섹션 idx 찾아 열고닫기
 function toggleWorks(mainIdx){
   $("#works").toggleClass("show");
   $("#works > section").eq(mainIdx).toggleClass("show");
-  start_animate();
   $("#works > section").eq(mainIdx).find(".animate-div").toggleClass("animate-start");
-  $("#works > section").eq(mainIdx).find(".works__area").on("scroll", start_animate);
+  // $(".works__wrap.show").find(".works__area").on("scroll", start_animate);
   setTimeout(() => {
     $("#works > section").eq(mainIdx).find(".works__area").scrollTop(0);
-  }, 400);
-}
-
-function updateUI(cateIdx, mainIdx) {
-  if (cateIdx !== cateIdx) {
-    if (cateIdx === 0) {
-      $("body").removeClass("st1");
-      $("#ui_header_right").addClass("active");
-      $("#main").addClass("show");
-      $(".about__area").scrollTop(0);
-    } else if (cateIdx === 1) {
-      $("body").addClass("st1");
-      $("#ui_header_right").removeClass("active");
-      $("#works").removeClass("show");
-      $(".works__wrap").removeClass("show");
-    }
-  }
+  }, 100);
 }
 
 // Ui
 $("#ui-page button").on("click", function (mainIdx){
   $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
-  cateIdx = $(this).parent(".ui-page__item").index();
+  let currentCateIdx = $(this).parent(".ui-page__item").index();
+  if(currentCateIdx === cateIdx){
+    return;
+  }
+  cateIdx = currentCateIdx;
   $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
-  updateUI(cateIdx,mainIdx);
-
+  if (cateIdx === 0) {
+    $("body").removeClass("st1");
+    $("#ui_header_right").addClass("active");
+    $("#main").addClass("show");
+    $(".about__area").scrollTop(0);
+    $("#works__wrap").removeClass("show")
+    $("#works > section").removeClass("show");
+    main_sw.slideTo(0, 500);
+  } else if (cateIdx === 1) {
+    $("body").addClass("st1");
+    $("#ui_header_right").removeClass("active");
+    $("#works").removeClass("show");
+    $(".works__wrap").removeClass("show");
+  }
 });
 
 // Nav
@@ -324,6 +321,7 @@ $("#ui_header_nav li").on("click", function (){
 // 세팅
 const main_sw = new Swiper('#sw_main', {
   effect: 'fade',
+  speed: '1600',
   loop: true,
   pagination: {
     el: '.swiper-pagination',
@@ -447,7 +445,7 @@ $(function (){
   ];
   const siteListDiv = document.getElementById('works_new_list');
   const siteListHTML = site_new.map(site => `
-    <li class="works__grid-item animate-element fadeInUp">
+    <li class="works__grid-item">
       <a href="${site.url}" class="works__grid-link" target="_blank">
         <div class="img-wrap"><img src="${site.src}"></div>
         <div class="works__grid-inner">
@@ -467,7 +465,7 @@ $(function (){
   ];
   const pgListDiv = document.getElementById('pg_list');
   const pgListHTML = pg_item.map(pg => `
-    <li class="works__grid-item animate-element fadeInUp">
+    <li class="works__grid-item">
       <div class="works__grid-link" target="_blank">
         <div class="video-wrap"><video src="${pg.video_src}" autoplay muted loop></video></div>
         <div class="works__grid-inner">
@@ -493,54 +491,3 @@ $(function (){
   }, 3800);
 });
 
-
-
-/**********************************************/
-// Animate element 
-/**********************************************/
-$.belowthefold = function(element, settings){
-  let fold = $(window).height() + $(window).scrollTop();
-  return fold <= $(element).offset().top - settings.threshold;
-};
-$.abovethetop = function(element, settings){
-  let top = $(window).scrollTop();
-  return top >= $(element).offset().top + $(element).height() - settings.threshold;
-};
-$.rightofscreen = function(element, settings){
-  let fold = $(window).width() + $(window).scrollLeft();
-  return fold <= $(element).offset().left - settings.threshold;
-};
-$.leftofscreen = function(element, settings){
-  let left = $(window).scrollLeft();
-  return left >= $(element).offset().left + $(element).width() - settings.threshold;
-};
-$.inviewport = function(element, settings){
-  return !$.rightofscreen(element, settings) && !$.leftofscreen(element, settings) && !$.belowthefold(element, settings) && !$.abovethetop(element, settings);
-};
-$.extend($.expr[':'], {
-  "below-the-fold": function(a, i, m) {
-    return $.belowthefold(a, {threshold : 0});
-  },"above-the-top": function(a, i, m) {
-    return $.abovethetop(a, {threshold : 0});
-  },"left-of-screen": function(a, i, m) {
-    return $.leftofscreen(a, {threshold : 0});
-  },"right-of-screen": function(a, i, m) {
-    return $.rightofscreen(a, {threshold : 0});
-  },"in-viewport": function(a, i, m) {
-    return $.inviewport(a, {threshold : -250});
-  }
-});
-
-function start_animate(){
-  let j = 0;
-  $(".animate-element:in-viewport").each(function(){
-    let $this = $(this);
-    if(!$this.hasClass("start-animate") && !$this.hasClass("animated")){
-      $this.addClass("start-animate");
-      setTimeout(function(){
-        $this.addClass("animated");
-      }, 250 * j);
-      j++;
-    };
-  });
-}
