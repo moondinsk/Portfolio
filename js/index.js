@@ -1,240 +1,85 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { LensDistortionShader } from '../static/shaders/LensDistortionShader.js'
+import { WEBGL } from './webgl'
 
-const dracoLoader = new DRACOLoader()
-const loader = new GLTFLoader()
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
-dracoLoader.setDecoderConfig({ type: 'js' })
-loader.setDRACOLoader(dracoLoader)
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x333f4d);
+if (WEBGL.isWebGLAvailable()) {
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color(0x000000)
+  scene.add(new THREE.AxesHelper(5)) // 중심점 표현
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100)
-camera.position.set(45,16,-20)
-scene.add(camera)
+  const camera = new THREE.PerspectiveCamera(
+    47,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  )
+  camera.position.y = 1.8
+  camera.position.z = 300
+  camera.lookAt(0, 0, 0)
 
-const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }) // turn on antialias
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) //set pixel ratio
-renderer.setSize(window.innerWidth, window.innerHeight) // make it full screen
-renderer.outputEncoding = THREE.sRGBEncoding // set color encoding
-const container = document.getElementById('main_canvas');
-container.appendChild(renderer.domElement);
-
-const controls = new OrbitControls(camera, renderer.domElement)
-
-loader.load('models/gltf/Skull.glb', function (gltf) {
-  gltf.scene.traverse((obj) => {
-    if (obj.isMesh) {
-      sampler = new MeshSurfaceSampler(obj).build()
-    }
+  // 렌더러 추가
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,    // 배경을 투명하게
+    antialias: true, // 계단현상 억제
   })
-  transformMesh()
-})
 
-///// 매쉬를 포인터로
-let sampler
-let uniforms = { mousePos: {value: new THREE.Vector3()}}
-let pointsGeometry = new THREE.BufferGeometry()
-const cursor = {x:0, y:0}
-const vertices = []
-const tempPosition = new THREE.Vector3()
+  // 사이즈 세팅해서 렌더러 DOM에 넣기
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  const container = document.getElementById('main_canvas');
+  container.appendChild(renderer.domElement);
+  renderer.shadowMap.enabled = true  // 그림자 ok
+  renderer.toneMapping = THREE.ACESFilmicToneMapping // 톤매핑
+  renderer.toneMappingExposure = 1 // 톤매핑 값 설정
 
-function transformMesh(){
-  // Loop to sample a coordinate for each points
-  for (let i = 0; i < 1000; i ++) {
-      // Sample a random position in the model
-      sampler.sample(tempPosition)
-      // Push the coordinates of the sampled coordinates into the array
-      vertices.push(tempPosition.x, tempPosition.y, tempPosition.z)
-  }
+  // GLTF Load
+  const gltfLoader = new GLTFLoader();
+  const GLTFObjGroup = new THREE.Object3D(); 
+  // .Object3D 여러 도형을 하나의 3d로 묶어 줄수 있는 기능. 밖(ex. gsap rotate등 ..)에서도 조정가능할수 있도록 변수로 만들어주기 
+  // Load a glTF resource
+  gltfLoader.load(
+    '../models/earth/scene.gltf',
+    function ( gltf ) {
+      scene.add( gltf.scene )
+      const GLTFObj = gltf.scene
+      GLTFObj.scale.set(1, 1, 1) // 블랜더에서 저장한 그대로를 가져옴 1:1:1 비율로
+      GLTFObjGroup.add(GLTFObj) // 생성된 GLTFObj를 GLTFObjGroup에 추가
+      scene.add(GLTFObjGroup) // GLTFObjGroup를 scene에 추가
+    },
+  );
   
-  // Define all points positions from the previously created array
-  pointsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
+  // 빛
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+  directionalLight.position.set(-2, 2, 0.5)
+  scene.add(directionalLight)
 
-  // Define the matrial of the points
-  const pointsMaterial = new THREE.PointsMaterial({
-    color: 0x18ffff,
-    size: 0.1,
-    blending: THREE.AdditiveBlending,
-    transparent: true,
-    opacity: 0.8,
-    depthWrite: false,
-    sizeAttenuation: true,
-    alphaMap: new THREE.TextureLoader().load('particle-texture.jpg')
-  })
 
-  // Create the custom vertex shader injection
-  pointsMaterial.onBeforeCompile = function(shader) {
-    shader.uniforms.mousePos = uniforms.mousePos
-    shader.vertexShader = `
-      uniform vec3 mousePos;
-      varying float vNormal;
-      ${shader.vertexShader}`.replace(
-      `#include <begin_vertex>`,
-      `#include <begin_vertex>   
-        vec3 seg = position - mousePos;
-        vec3 dir = normalize(seg);
-        float dist = length(seg);
-        if (dist < 1.5){
-          float force = clamp(1.0 / (dist * dist), -0., .5);
-          transformed += dir * force;
-          vNormal = force /0.5;
-        }
-      `
-    )
-  }
-  const points = new THREE.Points(pointsGeometry, pointsMaterial)
-  scene.add(points)
-}
-
-//// 인트로 - 카메라 무빙, tween
-function introAnimation() {
-  controls.enabled = false //disable orbit controls to animate the camera
   
-  new TWEEN.Tween(camera.position.set(0,-1,0 )).to({ x: 2, y: -0.4, z: 6.1 }, 6500) // time take to animate
-  .easing(TWEEN.Easing.Quadratic.InOut).start() 
-  .onComplete(function () { //on finish animation
-    controls.enabled = true //enable orbit controls
-    setOrbitControlsLimits() //enable controls limits
-    TWEEN.remove(this) // remove the animation from memory
-  })
-}
-introAnimation()
-
-//// DEFINE ORBIT CONTROLS LIMITS
-function setOrbitControlsLimits(){
-  controls.enableDamping = true
-  controls.dampingFactor = 0.04
-  controls.minDistance = 0.5
-  controls.maxDistance = 9
-  controls.enableRotate = true
-  controls.enableZoom = true
-  controls.zoomSpeed = 0.5
-  controls.autoRotate = true
-}
-
-///// POST PROCESSING EFFECTS
-let width = window.innerWidth
-let height = window.innerHeight
-const renderPass = new RenderPass( scene, camera )
-const renderTarget = new THREE.WebGLRenderTarget( width, height,
-  {
-    minFilter: THREE.LinearFilter,
-    magFilter: THREE.LinearFilter,
-    format: THREE.RGBAFormat
+  function animate() {
+    requestAnimationFrame(animate) //인자로 받은 함수 animate를 반복 실행
+    GLTFObjGroup.rotation.y += 0.001
+    renderer.render(scene, camera)
   }
-)
-const composer = new EffectComposer(renderer, renderTarget)
-composer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-const distortPass = new ShaderPass( LensDistortionShader )
-distortPass.material.defines.CHROMA_SAMPLES = 4
-distortPass.enabled = true
-distortPass.material.uniforms.baseIor.value = 0.910
-distortPass.material.uniforms.bandOffset.value = 0.0019
-distortPass.material.uniforms.jitterIntensity.value = 20.7
-distortPass.material.defines.BAND_MODE = 2
-composer.addPass( renderPass )
-composer.addPass( distortPass )
+  animate()
 
-//// CUSTOM SHADER ANIMATED BACKGROUND
-let g = new THREE.PlaneBufferGeometry(2, 2)
-let m = new THREE.ShaderMaterial({
-  side: THREE.DoubleSide,
-  depthTest: false,
-  uniforms: {
-    iTime: { value: 0 },
-    iResolution:  { value: new THREE.Vector2() },
-    mousePos: {value: new THREE.Vector2()}
-  },
-  vertexShader: `
-      varying vec2 vUv;
-      void main(){
-          vUv = uv;
-          gl_Position = vec4( position, 1.0 );
-      }`,
-  fragmentShader: `
-    varying vec2 vUv;
-    uniform float iTime;
-    uniform vec2 iResolution;
-    uniform vec2 mousePos;
+  // 반응형 처리
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+  }
 
-    #define N 16
-    #define PI 3.14159265
-    #define depth 1.0
-    #define rate 0.3
-    #define huecenter 0.5
-
-    vec3 hsv2rgb( in vec3 c )
-    {
-        vec3 rgb = clamp( abs(mod(c.y*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, .3 );
-        return c.x * mix( vec3(.1), rgb, 1.0);
-    }
-
-    void main(){
-        vec2 v = gl_FragCoord.xy/iResolution.xy;
-        float t = iTime * 0.08;
-        float r = 1.8;
-        float d = 0.0;
-        for (int i = 1; i < N; i++) {
-            d = (PI / float(N)) * (float(i) * 14.0);
-            r += length(vec2(rate*v.y, rate*v.x)) + 1.21;
-            v = vec2(v.x+cos(v.y+cos(r)+d)+cos(t),v.y-sin(v.x+cos(r)+d)+sin(t));
-        }
-        r = (sin(r*0.09)*0.5)+0.5;            
-        // Set the hue value to represent blue color
-        vec3 hsv = vec3(
-            0.3, // Hue for blue (adjust as needed)
-            1.0-0.5*pow(max(r,0.0)*1.2,0.5), 
-            1.0-0.2*pow(max(r,0.4)*2.2,6.0)
-        );
-        gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
-    }`
-  })
-const p = new THREE.Mesh(g, m)
-scene.add(p)
-m.uniforms.iResolution.value.set(width, height)
-
-//// RENDER LOOP FUNCTION
-const clock = new THREE.Clock()
-function rendeLoop() {
-  TWEEN.update() // update animations
-  controls.update() // update orbit controls
-  composer.render() //render the scene with the composer
-  distortPass.material.uniforms.jitterOffset.value += 0.01
-  const time = clock.getElapsedTime() 
-  m.uniforms.iTime.value = time
-  requestAnimationFrame(rendeLoop) //loop the render function    
+  window.addEventListener('resize', onWindowResize)
+} else {
+  var warning = WEBGL.getWebGLErrorMessage()
+  document.body.appendChild(warning)
 }
-rendeLoop() //start rendering
 
-//// Mouse Event
-document.addEventListener('mousemove', (event) => {
-  event.preventDefault()
-  cursor.x = event.clientX / window.innerWidth -0.5
-  cursor.y = event.clientY / window.innerHeight -0.5
-  uniforms.mousePos.value.set(cursor.x, cursor.y, 0)
-  m.uniforms.mousePos.value.set(cursor.x, cursor.y)
-}, false)
 
-window.addEventListener('resize', () => {
-  const width = window.innerWidth
-  const height = window.innerHeight
-  camera.aspect = width / height
-  camera.updateProjectionMatrix()
-  renderer.setSize(width, height)
-  composer.setSize(width, height)
-  renderer.setPixelRatio(2)
-  m.uniforms.iResolution.value.set(width, height)
-})
+
+
 
 
 let cateIdx = 0;
@@ -290,6 +135,7 @@ $("#ui-page button").on("click", function (mainIdx){
 // Nav
 $("#ui_header_nav li").on("click", function (){
   mainIdx = $(this).index();
+  console.log(mainIdx)
   main_sw.slideTo(mainIdx, 500)
 });
 
@@ -323,6 +169,7 @@ const main_sw = new Swiper('#sw_main', {
     },
     slideChange: function () {
       mainIdx = this.realIndex;
+      console.log(mainIdx + "slidechange")
       $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
     }
   }
