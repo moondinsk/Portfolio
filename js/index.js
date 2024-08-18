@@ -108,7 +108,7 @@ function introAnimation() {
     TWEEN.remove(this) // remove the animation from memory
   })
 }
-// introAnimation()
+introAnimation()
 
 //// DEFINE ORBIT CONTROLS LIMITS
 function setOrbitControlsLimits(){
@@ -236,26 +236,6 @@ window.addEventListener('resize', () => {
   m.uniforms.iResolution.value.set(width, height)
 })
 
-function slideAnimation() {
-  controls.enabled = false; // Disable orbit controls to animate the camera
-  // Define the first tween animation (A -> B)
-  const tweenToB = new TWEEN.Tween(camera.position)
-    .to({ x: 0, y: -1, z: 0 }, 800) // Move to position B
-    .easing(TWEEN.Easing.Quadratic.InOut)
-    .onComplete(() => {
-      // Define the second tween animation (B -> A)
-      new TWEEN.Tween(camera.position)
-        .to({ x: 2, y: -0.4, z: 6.1 }, 1600) // Move back to position A
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onComplete(() => {
-          controls.enabled = true; // Enable orbit controls after animation
-          setOrbitControlsLimits(); // Enable controls limits
-        })
-        .start(); // Start the second animation
-      })
-    .start(); // Start the first animation
-}
-
 
 let cateIdx = 0;
 let mainIdx = 0;
@@ -266,6 +246,7 @@ let mainIdx = 0;
 // 메인 열고닫기
 function toggleMain(){
   $("#main").toggleClass("show");
+  $("#sw_main").toggleClass("show");
   $("#ui_header_right").toggleClass("active");
   $("#works > section").find(".animate-div").removeClass("animate-start");
 }
@@ -321,15 +302,11 @@ $("#ui_header_nav li").on("click", function (){
 // 세팅
 const main_sw = new Swiper('#sw_main', {
   effect: 'fade',
-  speed: '1600',
+  speed: '800',
   loop: true,
   pagination: {
     el: '.swiper-pagination',
     clickable: true,
-  },
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
   },
   mousewheel: {
     enabled: true,
@@ -339,10 +316,14 @@ const main_sw = new Swiper('#sw_main', {
     onlyInViewport: true, // Only enable when swiper is in the viewport
   },
   on: {
+    init: function(){
+      setTimeout(() => {
+        $("#sw_main").addClass("show");
+      }, 3600);
+    },
     slideChange: function () {
       mainIdx = this.realIndex;
       $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
-      slideAnimation();
     }
   }
 });

@@ -84,9 +84,9 @@ body{
   color:rgba(255,255,255,.7);
   font-family: "Pretendard",sans-serif;
   border: 1px solid rgba(255,255,255,.7);
-  opacity:0;visibility:hidden;
+  // opacity:0;visibility:hidden;
   background-color: transparent;
-  transition:opacity .5s, visibility .5s, background-color .3s;;
+  transition:background-color .3s;;
   i.xi-plus-min {
     margin-left: 50px;
   }
@@ -244,32 +244,56 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
+    gap:100px 0;
     height:100vh;
-    padding-bottom:150px;
+    padding-bottom:300px;
     font-size:30px;
-    &:hover .view-more{
-      opacity:1;visibility:visible;
+    text-align: center;
+    color:rgba(255, 255, 255, 0.7);
+    // &:hover .view-more{
+    //   opacity:1;visibility:visible;
+    // }
+    h2{
+      font-family: "Rouganeck", "Pretendard", sans-serif;
+      font-size:42px; 
+      color:#fff;
+    }
+    span{
+      display: block;
+      margin-top:30px;
+      font-size: 14px;
+    }
+    p{
+      font-size:17px;
+      &::before{
+        content:"";
+        display: block;
+        margin:15px auto;
+        width:12px;
+        height:1px;
+        background-color: rgba(255,255,255,.5);
+      }
     }
     &-wrap{
       opacity:0;
-      @at-root .main.show .main__sec-wrap{
+      transition:opacity .3s;
+      &.show{
         opacity:1;
       }
-      // .swiper-slide{
-      //   *{
-      //     opacity:0;
-      //   }
-      //   &.swiper-slide-active *{
-      //     transition: opacity 1.5s;
-      //     opacity:1;
-      //   }
-      // }
+      .swiper-slide{
+        opacity:0 !important;
+        transition: opacity .5s;
+        &.swiper-slide-active{
+          opacity:1 !important;
+        }
+      }
       &.swiper{
         .swiper-pagination-bullet{
           width:20px;
           height:5px;
           margin:0 3px;
           border-radius: 0;
+          background-color:#eee;
         }
         .swiper-pagination{
           left:30px;
@@ -304,6 +328,7 @@ body{
     &.show{
       opacity:1;
       visibility: visible;
+      z-index: 3;
     }
   }
   &__scroll{

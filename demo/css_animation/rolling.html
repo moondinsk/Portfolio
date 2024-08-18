@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+*{padding:0;margin:0;}
+ul, li {list-style: none;}
+.flow_banner {display: flex;overflow: hidden;margin:0 auto;background: #000;}
+.flow_banner .list {display: flex;align-items:center;height:45px;}
+.flow_banner .list > li {white-space: nowrap;font-size: 13px;color: #fff;padding:0 100px;}
+@keyframes flowRolling {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+/* 반응형 스타일 */
+@media (max-width: 1280px) {
+    .flow_banner .list > li {font-size: 16px;padding: 10px;}
+}
+
+@media (max-width: 767px) {
+    .flow_banner .list > li {font-size: 14px;padding: 5px;}
+}
+
+    </style>
+</head>
+<body>
+<div class="flow_banner">
+    <ul class="list">
+        <li>바움129 홈페이지 리뉴얼 오픈 이벤트 ~15% 세일</li>
+        <li>바움129 홈페이지 리뉴얼 오픈 이벤트 ~15% 세일</li>
+        <li>바움129 홈페이지 리뉴얼 오픈 이벤트 ~15% 세일</li>
+    </ul>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script>
+$(window).on('load', function() {
+    setFlowBanner();
+})
+
+function setFlowBanner() {
+    const $wrap = $('.flow_banner');
+    const $list = $('.flow_banner .list');
+    let wrapWidth = ''; //$wrap의 가로 크기
+    let listWidth = ''; //$list의 가로 크기
+    const speed = 92; //1초에 몇픽셀 이동하는지 설정
+
+    //리스트 복제
+    let $clone = $list.clone();
+    $wrap.append($clone);
+    flowBannerAct()
+
+    //반응형 :: 디바이스가 변경 될 때마다 배너 롤링 초기화
+    let oldWChk = window.innerWidth > 1279 ? 'pc' : window.innerWidth > 767 ? 'ta' : 'mo';
+    $(window).on('resize', function() {
+        let newWChk = window.innerWidth > 1279 ? 'pc' : window.innerWidth > 767 ? 'ta' : 'mo';
+        if (newWChk != oldWChk) {
+            oldWChk = newWChk;
+            flowBannerAct();
+        }
+    });
+
+    //배너 실행 함수
+    function flowBannerAct() {
+        //배너 롤링 초기화
+        if (wrapWidth != '') {
+            $wrap.find('.list').css({
+                'animation': 'none'
+            });
+            $wrap.find('.list').slice(2).remove();
+        }
+        wrapWidth = $wrap.width();
+        listWidth = $list.width();
+
+        //무한 반복을 위해 리스트를 복제 후 배너에 추가
+        if (listWidth < wrapWidth) {
+            const listCount = Math.ceil(wrapWidth * 2 / listWidth);
+            for (let i = 2; i < listCount; i++) {
+                $clone = $clone.clone();
+                $wrap.append($clone);
+            }
+        }
+        $wrap.find('.list').css({
+            'animation': `${listWidth / speed}s linear infinite flowRolling`
+        });
+    }
+}
+
+</script>
+</html>
