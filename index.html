@@ -28,8 +28,8 @@
           <span>Publishing</span>
           <nav id="ui_header_nav" class="ui-header__nav">
             <ul class="ui-header__nav-list">
-              <li class="ui-header__nav-item active"><button type="button" class="ui-header__nav-link animate-div"><span>New Website</span></button></li>
-              <li class="ui-header__nav-item"><button type="button" class="ui-header__nav-link animate-div"><span>Etc.</span></button></li>
+              <li class="ui-header__nav-item active"><button type="button" class="ui-header__nav-link animate-div"><span>Works - New</span></button></li>
+              <li class="ui-header__nav-item"><button type="button" class="ui-header__nav-link animate-div"><span>Works - Etc.</span></button></li>
               <li class="ui-header__nav-item"><button type="button" class="ui-header__nav-link animate-div"><span>Playground</span></button></li>
             </ul>
           </nav>
@@ -46,6 +46,7 @@
           <a href="https://github.com/moondinsk" class="ui-footer__sns-link" target="_blank"><i class="xi-github"></i><span class="ui-footer__sns-text sr-only">Github</span></a>
         </div>
       </div>
+      <div id="main_canvas" class="main__canvas"></div>
     </div>
     <!--// UI -->
 
@@ -54,36 +55,37 @@
       <!-- Main -->
       <section class="prjects page__wrap show">
         <section id="main" class="main">
-          <div id="sw_main" class="main__sec-wrap swiper">
-            <div class="swiper-wrapper">
-              <section class="main__sec swiper-slide">
-                <div class="main__sec-text">
-                  <h2>New website</h2>
-                  <span>[ 퍼블리싱 메인 업무 ]</span>
-                  <p>솔루션 Admin 사용한 신규사이트 구축</p>
-                </div>
-                <button type="button" class="view-more">View more<i class="xi-plus-min"></i></button>
-              </section>
-              <section class="main__sec swiper-slide">
-                <div class="main__sec-text">
-                  <h2>Etc.</h2>
-                  <span>[ 다양한 퍼블리싱 경험 ]</span>
-                  <p>Html 작업, Cafe24, 고도몰, 통합 사이트, 모듈 등</p>
-                </div>
-                <button type="button" class="view-more">View more<i class="xi-plus-min"></i></button>
-              </section>
-              <section class="main__sec swiper-slide">
-                <div class="main__sec-text">
-                  <h2>Playground</h2>
-                  <span>[ 실험실 ]</span>
-                  <p>실습이나 테스트하던 작업물 정리한 모음집</p>
-                </div>
-                <button type="button" class="view-more">View more<i class="xi-plus-min"></i></button>
-              </section>
-            </div>
-            <div class="swiper-pagination"></div>
+          <div id="main_pagination" class="main__pagination">
+            <button type="button" class="main__pagination-bullet active"><span class="sr-only">New website</span></button>
+            <button type="button" class="main__pagination-bullet"><span class="sr-only">Etc.</span></button>
+            <button type="button" class="main__pagination-bullet"><span class="sr-only">Playground</span></button>
           </div>
-          <div id="main_canvas" class="main__canvas"></div>
+          <div class="main__slide">
+            <section class="main__sec __main-sec">
+              <div class="main__sec-text">
+                <h2>New website</h2>
+                <span>[ 업무 - 퍼블리싱팀 메인 업무 ]</span>
+                <p>솔루션 Admin 사용한 신규사이트 구축</p>
+              </div>
+              <button type="button" class="view-more __works-more">View more<i class="xi-plus-min"></i></button>
+            </section>
+            <section class="main__sec __main-sec">
+              <div class="main__sec-text">
+                <h2>Etc.</h2>
+                <span>[ 업무 - 다양한 퍼블리싱 경험 ]</span>
+                <p>Html 작업, Cafe24, 고도몰, 통합 사이트, 모듈 등</p>
+              </div>
+              <button type="button" class="view-more __works-more">View more<i class="xi-plus-min"></i></button>
+            </section>
+            <section class="main__sec __main-sec">
+              <div class="main__sec-text">
+                <h2>Playground</h2>
+                <span>[ 실험실 ]</span>
+                <p>실습이나 테스트하던 작업물을 정리한 모듈</p>
+              </div>
+              <button type="button" class="view-more __works-more">View more<i class="xi-plus-min"></i></button>
+            </section>
+          </div>
         </section>
         <!--// Main -->
 
