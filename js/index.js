@@ -4,7 +4,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import { WEBGL } from './webgl'
 
-
 if (WEBGL.isWebGLAvailable()) {
   const scene = new THREE.Scene()
   scene.background = new THREE.Color(0x000000)
@@ -77,7 +76,6 @@ if (WEBGL.isWebGLAvailable()) {
   }
   animate()
 
-  // 카메라 줌 애니메이션 함수
   function zoomInCamera() {
     new TWEEN.Tween(camera.position.set( 2, -0.4, 300)).to({ 
       x: 2, y: 1, z: 150
@@ -93,17 +91,16 @@ if (WEBGL.isWebGLAvailable()) {
     })
   }
 
-    // 카메라 줌 애니메이션 함수
-    function zoomOutCamera() {
-      new TWEEN.Tween(camera.position.set( 2, 1, 150)).to({ 
-        x: 2, y: -0.4, z: 300
-       }, 800) // time take to animate
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .start() 
-      .onComplete(function () { //on finish animation
-        TWEEN.remove(this) // remove the animation from memory
-      })
-    }
+  function zoomOutCamera() {
+    new TWEEN.Tween(camera.position.set( 2, 1, 150)).to({ 
+      x: 2, y: -0.4, z: 300
+      }, 800) // time take to animate
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .start() 
+    .onComplete(function () { //on finish animation
+      TWEEN.remove(this) // remove the animation from memory
+    })
+  }
 
   // 반응형 처리
   function onWindowResize() {
@@ -182,35 +179,34 @@ if (WEBGL.isWebGLAvailable()) {
   });
   
   
+  
   /**********************************************/
-  // Projects
+  // About
   /**********************************************/
-  /****** Main ******/
-  // 세팅
-  // const main_sw = new Swiper('#sw_main', {
-  //   // effect: 'fade',
-  //   speed: '800',
-  //   loop: true,
-  //   pagination: {
-  //     el: '.swiper-pagination',
-  //     clickable: true,
-  //   },
-  //   on: {
-  //     init: function(){
-  //       setTimeout(() => {
-  //         $("#sw_main").addClass("show");
-  //       }, 3600);
-  //     },
-  //     slideChange: function () {
-  //       mainIdx = this.realIndex;
-  //       console.log(mainIdx + "slidechange")
-  //       $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
-  //     }
-  //   }
-  // });
+  const about_sw = new Swiper('#sw_about', {
+    autoplay:true,
+    slidesPerView: 3,
+    spaceBetween: 30,
+    loop: true,
+  });
   
   
+  
+  /**********************************************/
+  // Window 시작
+  /**********************************************/
   $(function (){
+    setTimeout(() => {
+      $("#ui").find(".animate-div").addClass("animate-start");
+    }, 3000);
+    setTimeout(() => {
+      $("#main").addClass("show");
+    }, 3800);
+    setTimeout(() => {
+      $(".__main-sec").first().addClass("show");
+    }, 4500);
+    
+    /* Click Events */
     // 메인 - view-more 
     $(".__works-more").on("click",function (){
       toggleMain();
@@ -247,30 +243,6 @@ if (WEBGL.isWebGLAvailable()) {
         $(".works__scroll").removeClass("active");
       }
     });
-  })
-  
-  
-  
-  /**********************************************/
-  // About
-  /**********************************************/
-  const about_sw = new Swiper('#sw_about', {
-    autoplay:true,
-    slidesPerView: 3,
-    spaceBetween: 30,
-    loop: true,
-    on: {
-      slideChange: function () {
-      }
-    }
-  });
-  
-  
-  
-  /**********************************************/
-  // Window 시작
-  /**********************************************/
-  $(function (){
   
     // Works 신규사이트 ALL 불러오기
     const site_new = [
@@ -346,19 +318,7 @@ if (WEBGL.isWebGLAvailable()) {
       </li>
     `).join(''); 
     pgListDiv.innerHTML = pgListHTML;
-
-    setTimeout(() => {
-      $("#ui").find(".animate-div").addClass("animate-start");
-    }, 3000);
-    setTimeout(() => {
-      $("#main").addClass("show");
-    }, 3800);
-    setTimeout(() => {
-      $(".__main-sec").first().addClass("show");
-    }, 4500);
   });
-
-
 
 
 } else {
