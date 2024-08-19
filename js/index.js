@@ -140,7 +140,8 @@ if (WEBGL.isWebGLAvailable()) {
   }
   
   // Ui
-  $("#ui-page button").on("click", function (mainIdx){
+  $("#ui-page button").on("click", function (){
+    mainIdx = 0;
     $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
     let currentCateIdx = $(this).parent(".ui-page__item").index();
     if(currentCateIdx === cateIdx){
@@ -156,14 +157,13 @@ if (WEBGL.isWebGLAvailable()) {
       $("#ui_header_nav li").eq(0).addClass("active").siblings().removeClass("active");
       $("#main_pagination > button").eq(0).addClass("active").siblings().removeClass("active");
       zoomOutCamera();
-      
-      $(".about__area").scrollTop(0);
     } else if (cateIdx === 1) {
       // about me
       $("#ui_header_right").removeClass("active");
       $("#works").removeClass("show");
       $(".works__wrap").removeClass("show");
       zoomInCamera();
+      $(".about__area").scrollTop(0);
     }
   });
   
