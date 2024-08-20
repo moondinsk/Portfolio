@@ -58,7 +58,9 @@ if (WEBGL.isWebGLAvailable()) {
   controls.rotateSpeed = 0.2; 
   function introAnimation() {
     controls.enabled = false //disable orbit controls to animate the camera
-    new TWEEN.Tween(camera.position.set(0,-1, 0 )).to({ x: 2, y: -0.4, z: 300 }, 6500) // time take to animate
+    new TWEEN.Tween(camera.position.set(0,-1, 0 )).to({ 
+      x: 2, y: -0.4, z: 300 
+    }, 15000) // time take to animate
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
     .onComplete(function () { //on finish animation
@@ -66,7 +68,6 @@ if (WEBGL.isWebGLAvailable()) {
       TWEEN.remove(this) // remove the animation from memory
     })
   }
-  introAnimation()
 
   function animate() {
     requestAnimationFrame(animate) //인자로 받은 함수 animate를 반복 실행
@@ -74,7 +75,6 @@ if (WEBGL.isWebGLAvailable()) {
     GLTFObjGroup.rotation.y += 0.0001
     renderer.render(scene, camera)
   }
-  animate()
 
   function zoomInCamera() {
     new TWEEN.Tween(camera.position.set( 2, -0.4, 300)).to({ 
@@ -110,7 +110,6 @@ if (WEBGL.isWebGLAvailable()) {
   window.addEventListener('resize', onWindowResize);
 
 
-
   let cateIdx = 0;
   let mainIdx = 0;
   
@@ -134,15 +133,25 @@ if (WEBGL.isWebGLAvailable()) {
       $("#works > section").eq(mainIdx).find(".works__area").scrollTop(0);
     }, 100);
   }
-  
+
+
+
   /**********************************************/
   // About
   /**********************************************/
   const about_sw = new Swiper('#sw_about', {
     autoplay:true,
-    slidesPerView: 3,
-    spaceBetween: 30,
     loop: true,
+    breakpoints: {
+      0: {
+        slidesPerView: 2,
+        spaceBetween: 10,
+      },
+      640:{
+        slidesPerView: 3,
+        spaceBetween: 30,
+      }
+    },
   });
   
   
@@ -151,15 +160,17 @@ if (WEBGL.isWebGLAvailable()) {
   // Window 시작
   /**********************************************/
   $(function (){
+    introAnimation();
+    animate();
     setTimeout(() => {
       $("#ui").find(".animate-div").addClass("animate-start");
-    }, 3000);
+    }, 5000);
     setTimeout(() => {
       $("#main").addClass("show");
-    }, 3800);
+    }, 5800);
     setTimeout(() => {
       $(".__main-sec").first().addClass("show");
-    }, 4500);
+    }, 7500);
     
     /* Click Events */
     // Ui
@@ -232,13 +243,20 @@ if (WEBGL.isWebGLAvailable()) {
     });
   
     // 스크롤다운
-    $(".works__area").on("scroll", function() {
+    $(".works__area, .about__area").on("scroll", function() {
       let wks_top = $(this).scrollTop();
       if (wks_top === 0) {
         $(".works__scroll").addClass("active");
+        $(".__works-top").removeClass("active");
+
       }else{
         $(".works__scroll").removeClass("active");
+        $(".__works-top").addClass("active");
       }
+    });
+    $(".__works-top").on("click", function(){
+      $(".works__area").animate({ scrollTop: 0 });
+      $(".about__area").animate({ scrollTop: 0 });
     });
   
     // Works 신규사이트 ALL 불러오기
