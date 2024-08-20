@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
-import { WEBGL } from './webgl'
+import { WEBGL } from './webgl.js'
 
 if (WEBGL.isWebGLAvailable()) {
   const scene = new THREE.Scene()
@@ -83,11 +83,10 @@ if (WEBGL.isWebGLAvailable()) {
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start()
     .onUpdate(() => {
-      // 카메라 위치가 변경될 때마다 바라보는 지점을 업데이트
       camera.lookAt(0,0,0);
     })
-    .onComplete(function () { //on finish animation
-      TWEEN.remove(this) // remove the animation from memory
+    .onComplete(function () {
+      TWEEN.remove(this)
     })
   }
 
@@ -97,8 +96,8 @@ if (WEBGL.isWebGLAvailable()) {
       }, 800) // time take to animate
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
-    .onComplete(function () { //on finish animation
-      TWEEN.remove(this) // remove the animation from memory
+    .onComplete(function () {
+      TWEEN.remove(this) 
     })
   }
 
@@ -136,50 +135,6 @@ if (WEBGL.isWebGLAvailable()) {
     }, 100);
   }
   
-  // Ui
-  $("#ui-page button").on("click", function (){
-    mainIdx = 0;
-    $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
-    let currentCateIdx = $(this).parent(".ui-page__item").index();
-    if(currentCateIdx === cateIdx){
-      return;
-    }
-    cateIdx = currentCateIdx;
-    $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
-    if (cateIdx === 0) {
-      // project
-      $("#ui_header_right").addClass("active");
-      $("#main").addClass("show");
-      $(".__main-sec").eq(0).addClass("show").siblings().removeClass("show");
-      $("#ui_header_nav li").eq(0).addClass("active").siblings().removeClass("active");
-      $("#main_pagination > button").eq(0).addClass("active").siblings().removeClass("active");
-      zoomOutCamera();
-    } else if (cateIdx === 1) {
-      // about me
-      $("#ui_header_right").removeClass("active");
-      $("#works").removeClass("show");
-      $(".works__wrap").removeClass("show");
-      zoomInCamera();
-      $(".about__area").scrollTop(0);
-    }
-  });
-  
-  // Nav
-  $("#ui_header_nav li").on("click", function (){
-    mainIdx = $(this).index();
-    $(this).addClass("active").siblings().removeClass("active");
-    $("#main_pagination > button").eq(mainIdx).addClass("active").siblings().removeClass("active");
-    $(".__main-sec").eq(mainIdx).addClass("show").siblings().removeClass("show");
-  });
-  $("#main_pagination > button").on("click", function (){
-    mainIdx = $(this).index();
-    $(this).addClass("active").siblings().removeClass("active");
-    $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
-    $(".__main-sec").eq(mainIdx).addClass("show").siblings().removeClass("show");
-  });
-  
-  
-  
   /**********************************************/
   // About
   /**********************************************/
@@ -207,6 +162,48 @@ if (WEBGL.isWebGLAvailable()) {
     }, 4500);
     
     /* Click Events */
+    // Ui
+    $("#ui-page button").on("click", function (){
+      mainIdx = 0;
+      $(this).parent(".ui-page__item").addClass("active").siblings().removeClass("active");
+      let currentCateIdx = $(this).parent(".ui-page__item").index();
+      if(currentCateIdx === cateIdx){
+        return;
+      }
+      cateIdx = currentCateIdx;
+      $("#page > *").eq(cateIdx).addClass("show").siblings().removeClass("show");
+      if (cateIdx === 0) {
+        // project
+        $("#ui_header_right").addClass("active");
+        $("#main").addClass("show");
+        $(".__main-sec").eq(0).addClass("show").siblings().removeClass("show");
+        $("#ui_header_nav li").eq(0).addClass("active").siblings().removeClass("active");
+        $("#main_pagination > button").eq(0).addClass("active").siblings().removeClass("active");
+        zoomOutCamera();
+      } else if (cateIdx === 1) {
+        // about me
+        $("#ui_header_right").removeClass("active");
+        $("#works").removeClass("show");
+        $(".works__wrap").removeClass("show");
+        zoomInCamera();
+        $(".about__area").scrollTop(0);
+      }
+    });
+    
+    // Nav
+    $("#ui_header_nav li").on("click", function (){
+      mainIdx = $(this).index();
+      $(this).addClass("active").siblings().removeClass("active");
+      $("#main_pagination > button").eq(mainIdx).addClass("active").siblings().removeClass("active");
+      $(".__main-sec").eq(mainIdx).addClass("show").siblings().removeClass("show");
+    });
+    $("#main_pagination > button").on("click", function (){
+      mainIdx = $(this).index();
+      $(this).addClass("active").siblings().removeClass("active");
+      $("#ui_header_nav li").eq(mainIdx).addClass("active").siblings().removeClass("active");
+      $(".__main-sec").eq(mainIdx).addClass("show").siblings().removeClass("show");
+    });
+    
     // 메인 - view-more 
     $(".__works-more").on("click",function (){
       toggleMain();
@@ -246,40 +243,40 @@ if (WEBGL.isWebGLAvailable()) {
   
     // Works 신규사이트 ALL 불러오기
     const site_new = [
-      { title: "코스모비", url: "https://www.cosmobee.co.kr/", src:"/img/works/pro_34.jpg", category: "우주/항공", role: "100%" },
-      { title: "코드비전", url: "https://codevision.kr/", src:"/img/works/pro_33.jpg", category: "IT", role: "100%" },
-      { title: "포스코 청암재단", url: "https://postf.org/", src:"/img/works/pro_01.jpg", category: "기관", role: "80% (서브)" },
-      { title: "연세대학교 이과대학", url: "http://scienceyonsei.kr/", src:"/img/works/pro_02.jpg", category: "교육", role: "70% (서브)" },
-      { title: "섬유수출입협회", url: "https://textra.or.kr/", src:"/img/works/pro_03.jpg", category: "기관", role: "100%" },
-      { title: "한솔로지스틱스", url: "https://www.hansollogistics.com/", src:"/img/works/pro_04.jpg", category: "물류", role: "70% (서브)" },
-      { title: "일동제약몰", url: "https://ildongmall.co.kr/?brandName=biovita", src:"/img/works/pro_05.jpg", category: "바이오", role: "100%" },
-      { title: "ESR켄달스퀘어", url: "https://www.esrks-reit.com/", src:"/img/works/pro_06.jpg", category: "물류", role: "70% (서브)" },
-      { title: "JETTE", url: "https://jette.co.kr/", src:"/img/works/pro_07.jpg", category: "물류", role: "100%" },
-      { title: "서울대 의료양성사업단", url: "http://snuaimed.org/", src:"/img/works/pro_08.jpg", category: "교육", role: "100% (서브)" },
-      { title: "한솔로지스유", url: "https://hansollogisyou.com/", src:"/img/works/pro_09.jpg", category: "물류", role: "100% (서브)" },
-      { title: "귀뚜라미환경테크", url: "https://kituramiet.com/", src:"/img/works/pro_10.jpg", category: "기관", role: "100%" },
-      { title: "한국노바티스", url: "http://cusleep.co.kr/", src:"/img/works/pro_11.jpg", category: "바이오", role: "100%" },
-      { title: "이노큐브", url: "https://www.innocuve.com/", src:"/img/works/pro_12.jpg", category: "바이오", role: "100% (서브)" },
-      { title: "팬스타", url: "https://www.panstar.co.kr/", src:"/img/works/pro_13.jpg", category: "물류", role: "80% (서브)" },
-      { title: "NOW건축사무소", url: "http://www.nowarch.com/", src:"/img/works/pro_14.jpg", category: "건축", role: "100% (서브)" },
-      { title: "NOW CM", url: "http://www.nowcm.co.kr/", src:"/img/works/pro_32.jpg", category: "건축", role: "100%" },
-      { title: "SY탱크터미널", url: "http://www.sytankterminal.co.kr/", src:"/img/works/pro_15.jpg", category: "물류", role: "100%" },
-      { title: "도시락통", url: "https://dosiraktong.com/Main/Index", src:"/img/works/pro_16.jpg", category: "서비스", role: "100" },
-      { title: "서울대 MBRC", url: "https://www.healthbigdata.org/", src:"/img/works/pro_17.jpg", category: "교육", role: "80% (서브)" },
-      { title: "Merlotlab", url: "https://merlotlab.com/", src:"/img/works/pro_18.jpg", category: "IT", role: "100% (서브)" },
-      { title: "위더스애드", url: "https://withusad.co.kr/", src:"/img/works/pro_19.jpg", category: "광고", role: "80% (서브)" },
-      { title: "에너지컨설팅", url: "http://energyconsulting.co.kr/", src:"/img/works/pro_20.jpg", category: "기술", role: "100% (서브)" },
-      { title: "호현애프엔씨", url: "http://www.hohyun.co.kr/", src:"/img/works/pro_21.jpg", category: "기술", role: "100%" },
-      { title: "심플랫폼", url: "https://www.simplatform.com/ko/index.html", src:"/img/works/pro_22.jpg", category: "IT", role: "100% (서브)" },
-      { title: "연세대 화학과", url: "https://chemyonsei.kr/", src:"/img/works/pro_23.jpg", category: "교육", role: "100% (서브)" },
-      { title: "케이디건축사무소", url: "http://kdeng.co.kr/", src:"/img/works/pro_24.jpg", category: "건축", role: "100%" },
-      { title: "특허법인 시공", url: "https://sigong-ip.com/", src:"/img/works/pro_25.jpg", category: "법률", role: "100%" },
-      { title: "AGMG", url: "https://agmg.cafe24.com/", src:"/img/works/pro_26.jpg", category: "기업", role: "100%" },
-      { title: "법무법인 제승", url: "https://revivelaw.co.kr/", src:"/img/works/pro_27.jpg", category: "법률", role: "80% (서브)" },
-      { title: "대웅제약 idsTrust", url: "https://www.idstrust.com/", src:"/img/works/pro_28.jpg", category: "바이오", role: "100% (서브)" },
-      { title: "Lipac", url: "https://lipac.co.kr/", src:"/img/works/pro_29.jpg", category: "기술", role: "80% (서브)" },
-      { title: "Lamp7", url: "https://www.swrobot.com/", src:"/img/works/pro_30.jpg", category: "IT", role: "100%" },
-      { title: "아이앤테라퓨틱스", url: "http://www.intherapeutics.com/", src:"/img/works/pro_31.jpg", category: "바이오", role: "100%" },
+      { title: "코스모비", url: "https://www.cosmobee.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_34.JPG", category: "우주/항공", role: "100%" },
+      { title: "코드비전", url: "https://codevision.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_33.JPG", category: "IT", role: "100%" },
+      { title: "포스코 청암재단", url: "https://postf.org/", src:"http://moondinsk.dothome.co.kr/img/works/pro_01.JPG", category: "기관", role: "80% (서브)" },
+      { title: "연세대학교 이과대학", url: "http://scienceyonsei.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_02.JPG", category: "교육", role: "70% (서브)" },
+      { title: "섬유수출입협회", url: "https://textra.or.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_03.JPG", category: "기관", role: "100%" },
+      { title: "한솔로지스틱스", url: "https://www.hansollogistics.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_04.JPG", category: "물류", role: "70% (서브)" },
+      { title: "일동제약몰", url: "https://ildongmall.co.kr/?brandName=biovita", src:"http://moondinsk.dothome.co.kr/img/works/pro_05.JPG", category: "바이오", role: "100%" },
+      { title: "ESR켄달스퀘어", url: "https://www.esrks-reit.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_06.JPG", category: "물류", role: "70% (서브)" },
+      { title: "JETTE", url: "https://jette.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_07.JPG", category: "물류", role: "100%" },
+      { title: "서울대 의료양성사업단", url: "http://snuaimed.org/", src:"http://moondinsk.dothome.co.kr/img/works/pro_08.JPG", category: "교육", role: "100% (서브)" },
+      { title: "한솔로지스유", url: "https://hansollogisyou.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_09.JPG", category: "물류", role: "100% (서브)" },
+      { title: "귀뚜라미환경테크", url: "https://kituramiet.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_10.JPG", category: "기관", role: "100%" },
+      { title: "한국노바티스", url: "http://cusleep.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_11.JPG", category: "바이오", role: "100%" },
+      { title: "이노큐브", url: "https://www.innocuve.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_12.JPG", category: "바이오", role: "100% (서브)" },
+      { title: "팬스타", url: "https://www.panstar.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_13.JPG", category: "물류", role: "80% (서브)" },
+      { title: "NOW건축사무소", url: "http://www.nowarch.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_14.JPG", category: "건축", role: "100% (서브)" },
+      { title: "NOW CM", url: "http://www.nowcm.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_32.JPG", category: "건축", role: "100%" },
+      { title: "SY탱크터미널", url: "http://www.sytankterminal.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_15.JPG", category: "물류", role: "100%" },
+      { title: "도시락통", url: "https://dosiraktong.com/Main/Index", src:"http://moondinsk.dothome.co.kr/img/works/pro_16.JPG", category: "서비스", role: "100" },
+      { title: "서울대 MBRC", url: "https://www.healthbigdata.org/", src:"http://moondinsk.dothome.co.kr/img/works/pro_17.JPG", category: "교육", role: "80% (서브)" },
+      { title: "Merlotlab", url: "https://merlotlab.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_18.JPG", category: "IT", role: "100% (서브)" },
+      { title: "위더스애드", url: "https://withusad.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_19.JPG", category: "광고", role: "80% (서브)" },
+      { title: "에너지컨설팅", url: "http://energyconsulting.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_20.JPG", category: "기술", role: "100% (서브)" },
+      { title: "호현애프엔씨", url: "http://www.hohyun.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_21.JPG", category: "기술", role: "100%" },
+      { title: "심플랫폼", url: "https://www.simplatform.com/ko/index.html", src:"http://moondinsk.dothome.co.kr/img/works/pro_22.JPG", category: "IT", role: "100% (서브)" },
+      { title: "연세대 화학과", url: "https://chemyonsei.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_23.JPG", category: "교육", role: "100% (서브)" },
+      { title: "케이디건축사무소", url: "http://kdeng.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_24.JPG", category: "건축", role: "100%" },
+      { title: "특허법인 시공", url: "https://sigong-ip.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_25.JPG", category: "법률", role: "100%" },
+      { title: "AGMG", url: "https://agmg.cafe24.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_26.JPG", category: "기업", role: "100%" },
+      { title: "법무법인 제승", url: "https://revivelaw.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_27.JPG", category: "법률", role: "80% (서브)" },
+      { title: "대웅제약 idsTrust", url: "https://www.idstrust.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_28.JPG", category: "바이오", role: "100% (서브)" },
+      { title: "Lipac", url: "https://lipac.co.kr/", src:"http://moondinsk.dothome.co.kr/img/works/pro_29.JPG", category: "기술", role: "80% (서브)" },
+      { title: "Lamp7", url: "https://www.swrobot.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_30.JPG", category: "IT", role: "100%" },
+      { title: "아이앤테라퓨틱스", url: "http://www.intherapeutics.com/", src:"http://moondinsk.dothome.co.kr/img/works/pro_31.JPG", category: "바이오", role: "100%" },
     ];
     const siteListDiv = document.getElementById('works_new_list');
     const siteListHTML = site_new.map(site => `
