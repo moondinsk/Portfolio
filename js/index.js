@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import { WEBGL } from './webgl.js'
 
@@ -12,11 +13,8 @@ if (WEBGL.isWebGLAvailable()) {
     47,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    100
   )
-  camera.position.y = 1.8
-  camera.position.z = 300
-  camera.lookAt(0, 0, 0)
 
   // 렌더러 추가
   const renderer = new THREE.WebGLRenderer({
@@ -28,44 +26,62 @@ if (WEBGL.isWebGLAvailable()) {
   renderer.setSize(window.innerWidth, window.innerHeight)
   const container = document.getElementById('main_canvas');
   container.appendChild(renderer.domElement);
-  renderer.shadowMap.enabled = true  // 그림자 ok
-  renderer.toneMapping = THREE.ACESFilmicToneMapping // 톤매핑
-  renderer.toneMappingExposure = 1 // 톤매핑 값 설정
+  // renderer.shadowMap.enabled = true  // 그림자 ok
+  // renderer.toneMapping = THREE.ACESFilmicToneMapping // 톤매핑
+  // renderer.toneMappingExposure = 1 // 톤매핑 값 설정
 
   // GLTF Load
-  const gltfLoader = new GLTFLoader();
+  const dracoLoader = new DRACOLoader()
+  const gltfLoader = new GLTFLoader()
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+  dracoLoader.setDecoderConfig({ type: 'js' })
+  gltfLoader.setDRACOLoader(dracoLoader)
   const GLTFObjGroup = new THREE.Object3D(); 
   // .Object3D 여러 도형을 하나의 3d로 묶어 줄수 있는 기능. 밖(ex. gsap rotate등 ..)에서도 조정가능할수 있도록 변수로 만들어주기 
   // Load a glTF resource
   gltfLoader.load(
-    '../models/earth/scene.gltf',
+    '../models/earth.glb',
     function ( gltf ) {
       scene.add( gltf.scene )
       const GLTFObj = gltf.scene
-      GLTFObj.scale.set(1, 1, 1) // 블랜더에서 저장한 그대로를 가져옴 1:1:1 비율로
+      GLTFObj.scale.set(4, 4, 4) // 블랜더에서 저장한 그대로를 가져옴 1:1:1 비율로
       GLTFObjGroup.add(GLTFObj) // 생성된 GLTFObj를 GLTFObjGroup에 추가
       scene.add(GLTFObjGroup) // GLTFObjGroup를 scene에 추가
+      introAnimation();
+      animate();
+      setTimeout(() => {
+        $("#ui").find(".animate-div").addClass("animate-start");
+      }, 1200);
+      setTimeout(() => {
+        $("#main").addClass("show");
+      }, 2400);
+      setTimeout(() => {
+        $(".__main-sec").first().addClass("show");
+      }, 3000);
     },
   );
   
   // 빛
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-  directionalLight.position.set(-1, 1, 0.5)
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
   scene.add(directionalLight)
+  
+  const spotLight = new THREE.SpotLight(0xffffff, 1);
+  spotLight.position.set(10, 20, 10);
+  scene.add(spotLight)
 
   // 인트로
   const controls = new OrbitControls(camera, container)
   controls.rotateSpeed = 0.2; 
   function introAnimation() {
-    controls.enabled = false //disable orbit controls to animate the camera
+    controls.enabled = false 
     new TWEEN.Tween(camera.position.set(0,-1, 0 )).to({ 
-      x: 2, y: -0.4, z: 300 
-    }, 15000) // time take to animate
+      x: 1, y: 1, z: 50 
+    }, 4500)
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
-    .onComplete(function () { //on finish animation
-      controls.enabled = true //enable orbit controls
-      TWEEN.remove(this) // remove the animation from memory
+    .onComplete(function () {
+      controls.enabled = true 
+      TWEEN.remove(this) 
     })
   }
 
@@ -77,13 +93,13 @@ if (WEBGL.isWebGLAvailable()) {
   }
 
   function zoomInCamera() {
-    new TWEEN.Tween(camera.position.set( 2, -0.4, 300)).to({ 
-      x: 2, y: 1, z: 150
+    new TWEEN.Tween(camera.position.set( 1, 1, 50)).to({ 
+      x: 1, y: 5, z: 30
      }, 800) // time take to animate
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start()
     .onUpdate(() => {
-      camera.lookAt(0,0,0);
+      camera.lookAt(0,5,0);
     })
     .onComplete(function () {
       TWEEN.remove(this)
@@ -91,8 +107,8 @@ if (WEBGL.isWebGLAvailable()) {
   }
 
   function zoomOutCamera() {
-    new TWEEN.Tween(camera.position.set( 2, 1, 150)).to({ 
-      x: 2, y: -0.4, z: 300
+    new TWEEN.Tween(camera.position.set( 1, 5, 30)).to({ 
+      x: 1, y: 1, z: 50
       }, 800) // time take to animate
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
@@ -160,17 +176,6 @@ if (WEBGL.isWebGLAvailable()) {
   // Window 시작
   /**********************************************/
   $(function (){
-    introAnimation();
-    animate();
-    setTimeout(() => {
-      $("#ui").find(".animate-div").addClass("animate-start");
-    }, 5000);
-    setTimeout(() => {
-      $("#main").addClass("show");
-    }, 5800);
-    setTimeout(() => {
-      $(".__main-sec").first().addClass("show");
-    }, 7500);
     
     /* Click Events */
     // Ui
@@ -320,7 +325,7 @@ if (WEBGL.isWebGLAvailable()) {
     const pgListHTML = pg_item.map(pg => `
       <li class="works__grid-item">
         <div class="works__grid-link" target="_blank">
-          <div class="video-wrap"><video src="${pg.video_src}" autoplay muted loop></video></div>
+          <div class="video-wrap"><video src="${pg.video_src}" autoplay muted loop playinline></video></div>
           <div class="works__grid-inner">
             <h4>${pg.category}</h4>
             <span>${pg.event}</span>
