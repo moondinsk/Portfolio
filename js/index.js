@@ -15,6 +15,8 @@ if (WEBGL.isWebGLAvailable()) {
     0.1,
     100
   )
+  // camera.lookAt(0,0,0);
+  camera.lookAt(new THREE.Vector3(0, 0, 0)); 
 
   // 렌더러 추가
   const renderer = new THREE.WebGLRenderer({
@@ -37,11 +39,13 @@ if (WEBGL.isWebGLAvailable()) {
   // .Object3D 여러 도형을 하나의 3d로 묶어 줄수 있는 기능. 밖(ex. gsap rotate등 ..)에서도 조정가능할수 있도록 변수로 만들어주기 
   // Load a glTF resource
   gltfLoader.load(
-    '../models/earth.glb',
+    '../models/planet/scene.gltf',
     function ( gltf ) {
       scene.add( gltf.scene )
       const GLTFObj = gltf.scene
-      GLTFObj.scale.set(4, 4, 4) // 블랜더에서 저장된
+      GLTFObj.scale.set(6, 6, 6) // 블랜더에서 저장된
+      GLTFObjGroup.rotation.x = Math.PI / 18;
+      GLTFObjGroup.rotation.z = Math.PI / 12;
       GLTFObjGroup.add(GLTFObj) 
       scene.add(GLTFObjGroup)
       introAnimation();
@@ -68,10 +72,14 @@ if (WEBGL.isWebGLAvailable()) {
   // 인트로
   const controls = new OrbitControls(camera, container)
   controls.rotateSpeed = 0.2; 
+  // controls.minDistance = 2; // 마우스 휠로 카메라 거리 조작시 최소 값. 기본값(Float)은 0 입니다.
+  // controls.maxDistance = 5; // 마우스 휠로 카메라 거리 조작시 최대 값. 기본값(Float)은 무제한 입니다.
+  // controls.maxPolarAngle = Math.PI / 2 ; // 각도 제한
+  // controls.maxPolarAngle = 3.14/2;
   function introAnimation() {
     controls.enabled = false 
     new TWEEN.Tween(camera.position.set(0,-1, 0 )).to({ 
-      x: 1, y: 1, z: 50 
+      x: 1, y: 0, z: 30 
     }, 4500)
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
@@ -84,7 +92,7 @@ if (WEBGL.isWebGLAvailable()) {
   function animate() {
     requestAnimationFrame(animate) //인자로 받은 함수 animate를 반복 실행
     TWEEN.update();
-    GLTFObjGroup.rotation.y += 0.0001
+    GLTFObjGroup.rotation.y += 0.001
     renderer.render(scene, camera)
   }
 
@@ -95,7 +103,7 @@ if (WEBGL.isWebGLAvailable()) {
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start()
     .onUpdate(() => {
-      camera.lookAt(0,5,0);
+      // camera.lookAt(0,5,0);
     })
     .onComplete(function () {
       TWEEN.remove(this)
