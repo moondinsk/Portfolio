@@ -26,9 +26,6 @@ if (WEBGL.isWebGLAvailable()) {
   renderer.setSize(window.innerWidth, window.innerHeight)
   const container = document.getElementById('main_canvas');
   container.appendChild(renderer.domElement);
-  // renderer.shadowMap.enabled = true  // 그림자 ok
-  // renderer.toneMapping = THREE.ACESFilmicToneMapping // 톤매핑
-  // renderer.toneMappingExposure = 1 // 톤매핑 값 설정
 
   // GLTF Load
   const dracoLoader = new DRACOLoader()
@@ -44,9 +41,9 @@ if (WEBGL.isWebGLAvailable()) {
     function ( gltf ) {
       scene.add( gltf.scene )
       const GLTFObj = gltf.scene
-      GLTFObj.scale.set(4, 4, 4) // 블랜더에서 저장한 그대로를 가져옴 1:1:1 비율로
-      GLTFObjGroup.add(GLTFObj) // 생성된 GLTFObj를 GLTFObjGroup에 추가
-      scene.add(GLTFObjGroup) // GLTFObjGroup를 scene에 추가
+      GLTFObj.scale.set(4, 4, 4) // 블랜더에서 저장된
+      GLTFObjGroup.add(GLTFObj) 
+      scene.add(GLTFObjGroup)
       introAnimation();
       animate();
       setTimeout(() => {
@@ -94,7 +91,7 @@ if (WEBGL.isWebGLAvailable()) {
   function zoomInCamera() {
     new TWEEN.Tween(camera.position.set( 1, 1, 50)).to({ 
       x: 1, y: 5, z: 30
-     }, 800) // time take to animate
+    }, 800)
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start()
     .onUpdate(() => {
@@ -108,7 +105,7 @@ if (WEBGL.isWebGLAvailable()) {
   function zoomOutCamera() {
     new TWEEN.Tween(camera.position.set( 1, 5, 30)).to({ 
       x: 1, y: 1, z: 50
-      }, 800) // time take to animate
+    }, 800)
     .easing(TWEEN.Easing.Quadratic.InOut)
     .start() 
     .onComplete(function () {
@@ -123,6 +120,7 @@ if (WEBGL.isWebGLAvailable()) {
     renderer.setSize(window.innerWidth, window.innerHeight)
   }
   window.addEventListener('resize', onWindowResize);
+
 
 
   let cateIdx = 0;
@@ -265,40 +263,40 @@ if (WEBGL.isWebGLAvailable()) {
   
     // Works 신규사이트 ALL 불러오기
     const site_new = [
-      { title: "코스모비", url: "https://www.cosmobee.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_34.JPG", category: "우주/항공", role: "100%" },
-      { title: "코드비전", url: "https://codevision.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_33.JPG", category: "IT", role: "100%" },
+      { title: "코스모비", url: "https://www.cosmobee.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_34.JPG", category: "우주/항공", role: "100% (메인)" },
+      { title: "코드비전", url: "https://codevision.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_33.JPG", category: "IT", role: "100% (메인)" },
       { title: "포스코 청암재단", url: "https://postf.org/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_01.JPG", category: "기관", role: "80% (서브)" },
       { title: "연세대학교 이과대학", url: "http://scienceyonsei.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_02.JPG", category: "교육", role: "70% (서브)" },
-      { title: "섬유수출입협회", url: "https://textra.or.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_03.JPG", category: "기관", role: "100%" },
+      { title: "섬유수출입협회", url: "https://textra.or.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_03.JPG", category: "기관", role: "100% (메인)" },
       { title: "한솔로지스틱스", url: "https://www.hansollogistics.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_04.JPG", category: "물류", role: "70% (서브)" },
-      { title: "일동제약몰", url: "https://ildongmall.co.kr/?brandName=biovita", src:"http://moondinsk1.dothome.co.kr/img/works/pro_05.JPG", category: "바이오", role: "100%" },
+      { title: "일동제약몰", url: "https://ildongmall.co.kr/?brandName=biovita", src:"http://moondinsk1.dothome.co.kr/img/works/pro_05.JPG", category: "바이오", role: "100% (메인)" },
       { title: "ESR켄달스퀘어", url: "https://www.esrks-reit.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_06.JPG", category: "물류", role: "70% (서브)" },
-      { title: "JETTE", url: "https://jette.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_07.JPG", category: "물류", role: "100%" },
+      { title: "JETTE", url: "https://jette.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_07.JPG", category: "물류", role: "100% (메인)" },
       { title: "서울대 의료양성사업단", url: "http://snuaimed.org/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_08.JPG", category: "교육", role: "100% (서브)" },
       { title: "한솔로지스유", url: "https://hansollogisyou.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_09.JPG", category: "물류", role: "100% (서브)" },
-      { title: "귀뚜라미환경테크", url: "https://kituramiet.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_10.JPG", category: "기관", role: "100%" },
-      { title: "한국노바티스", url: "http://cusleep.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_11.JPG", category: "바이오", role: "100%" },
+      { title: "귀뚜라미환경테크", url: "https://kituramiet.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_10.JPG", category: "기관", role: "100% (메인)" },
+      { title: "한국노바티스", url: "http://cusleep.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_11.JPG", category: "바이오", role: "100% (메인)" },
       { title: "이노큐브", url: "https://www.innocuve.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_12.JPG", category: "바이오", role: "100% (서브)" },
       { title: "팬스타", url: "https://www.panstar.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_13.JPG", category: "물류", role: "80% (서브)" },
       { title: "NOW건축사무소", url: "http://www.nowarch.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_14.JPG", category: "건축", role: "100% (서브)" },
-      { title: "NOW CM", url: "http://www.nowcm.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_32.JPG", category: "건축", role: "100%" },
-      { title: "SY탱크터미널", url: "http://www.sytankterminal.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_15.JPG", category: "물류", role: "100%" },
-      { title: "도시락통", url: "https://dosiraktong.com/Main/Index", src:"http://moondinsk1.dothome.co.kr/img/works/pro_16.JPG", category: "서비스", role: "100" },
+      { title: "NOW CM", url: "http://www.nowcm.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_32.JPG", category: "건축", role: "100% (메인)" },
+      { title: "SY탱크터미널", url: "http://www.sytankterminal.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_15.JPG", category: "물류", role: "100% (메인)" },
+      { title: "도시락통", url: "https://dosiraktong.com/Main/Index", src:"http://moondinsk1.dothome.co.kr/img/works/pro_16.JPG", category: "서비스", role: "100% (메인)" },
       { title: "서울대 MBRC", url: "https://www.healthbigdata.org/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_17.JPG", category: "교육", role: "80% (서브)" },
       { title: "Merlotlab", url: "https://merlotlab.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_18.JPG", category: "IT", role: "100% (서브)" },
       { title: "위더스애드", url: "https://withusad.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_19.JPG", category: "광고", role: "80% (서브)" },
       { title: "에너지컨설팅", url: "http://energyconsulting.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_20.JPG", category: "기술", role: "100% (서브)" },
-      { title: "호현애프엔씨", url: "http://www.hohyun.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_21.JPG", category: "기술", role: "100%" },
+      { title: "호현애프엔씨", url: "http://www.hohyun.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_21.JPG", category: "기술", role: "100% (메인)" },
       { title: "심플랫폼", url: "https://www.simplatform.com/ko/index.html", src:"http://moondinsk1.dothome.co.kr/img/works/pro_22.JPG", category: "IT", role: "100% (서브)" },
       { title: "연세대 화학과", url: "https://chemyonsei.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_23.JPG", category: "교육", role: "100% (서브)" },
-      { title: "케이디건축사무소", url: "http://kdeng.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_24.JPG", category: "건축", role: "100%" },
-      { title: "특허법인 시공", url: "https://sigong-ip.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_25.JPG", category: "법률", role: "100%" },
-      { title: "AGMG", url: "https://agmg.cafe24.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_26.JPG", category: "기업", role: "100%" },
+      { title: "케이디건축사무소", url: "http://kdeng.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_24.JPG", category: "건축", role: "100% (메인)" },
+      { title: "특허법인 시공", url: "https://sigong-ip.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_25.JPG", category: "법률", role: "100% (메인)" },
+      { title: "AGMG", url: "https://agmg.cafe24.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_26.JPG", category: "기업", role: "100% (메인)" },
       { title: "법무법인 제승", url: "https://revivelaw.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_27.JPG", category: "법률", role: "80% (서브)" },
       { title: "대웅제약 idsTrust", url: "https://www.idstrust.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_28.JPG", category: "바이오", role: "100% (서브)" },
       { title: "Lipac", url: "https://lipac.co.kr/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_29.JPG", category: "기술", role: "80% (서브)" },
-      { title: "Lamp7", url: "https://www.swrobot.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_30.JPG", category: "IT", role: "100%" },
-      { title: "아이앤테라퓨틱스", url: "http://www.intherapeutics.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_31.JPG", category: "바이오", role: "100%" },
+      { title: "Lamp7", url: "https://www.swrobot.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_30.JPG", category: "IT", role: "100% (메인)" },
+      { title: "아이앤테라퓨틱스", url: "http://www.intherapeutics.com/", src:"http://moondinsk1.dothome.co.kr/img/works/pro_31.JPG", category: "바이오", role: "100% (메인)" },
     ];
     const siteListDiv = document.getElementById('works_new_list');
     const siteListHTML = site_new.map(site => `
